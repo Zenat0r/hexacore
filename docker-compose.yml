@@ -1,0 +1,26 @@
+version: "2"
+services:
+    www:
+        build: ./Docker/php/
+        ports: 
+            - "8080:80"
+        volumes:
+            - .:/var/www/html/
+        links:
+            - db
+        networks:
+            - default
+    db:
+        image: mysql
+        ports: 
+            - "3306:3306"
+        environment:
+            MYSQL_DATABASE: myDb
+            MYSQL_USER: hexacore
+            MYSQL_PASSWORD: test
+            MYSQL_ROOT_PASSWORD: test
+        #volumes:
+            #- ./dump:/docker-entrypoint-initdb.d
+            #- persistent:/var/lib/mysql
+        networks:
+            - default
