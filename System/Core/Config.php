@@ -18,7 +18,7 @@ class Config {
     return self::$instance;
   }
 
-  private function __contructor(string $filepath = __DIR__ . "/../../App/config/prod.json") : void
+  private function __contructor(string $filepath = __DIR__ . "/../../App/config/app.json") : void
   {
     $string = file_get_contents($filepath);
     $this->params = json_decode($string, true);
