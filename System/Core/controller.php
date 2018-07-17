@@ -1,107 +1,116 @@
 <?php
 
-abstract class Controller {
+abstract class Controller
+{
+    // Action à réaliser
+    private $action;
 
-  // Action à réaliser
-  private $action;
+    //Erreur detercté (utilisé pour motrez la vue error dans les constructeurs)
+    private $error = false;
 
-  //Erreur detercté (utilisé pour motrez la vue error dans les constructeurs)
-  private $error = false;
+    // Requête entrante
+    protected $query;
 
-  // Requête entrante
-  protected $query;
+    // Session variable
+    protected $session;
 
-  // Session variable
-  protected $session;
+    // Data variable,
+    protected $data = [];
 
-  // Data variable,
-  protected $data= array();
+    // Instance de layout
+    protected $layout;
 
-  // Instance de layout
-  protected $layout;
-
-  public function __construct() {
-      $this->session = new Session(31557600);
-      $this->session->start();
-  }
-
-  // Définit la requête entrante
-  public function setQuery(Query $query) {
-    $this->query = $query;
-  }
-
-  // Exécute l'action à réaliser
-  public function execAction($action) {
-    if (method_exists($this, $action)) {
-      $this->action = $action;
-      if(!$this->error) $this->{$this->action}();
+    public function __construct()
+    {
+        $this->session = new Session(31557600);
+        $this->session->start();
     }
-    else {
-      $classController = get_class($this);
-      throw new Exception("Action '$action' non définie dans la classe $classController");
+
+    // Définit la requête entrante
+    public function setQuery(Query $query)
+    {
+        $this->query = $query;
     }
-  }
 
-  // Méthode abstraite correspondant à l'action par défaut
-  // Oblige les classes dérivées à implémenter cette action par défaut
-  public abstract function index();
+    // Exécute l'action à réaliser
+    public function execAction($action)
+    {
+        if (method_exists($this, $action)) {
+            $this->action = $action;
+            if (!$this->error) {
+                $this->{$this->action}();
+            }
+        } else {
+            $classController = get_class($this);
+            throw new Exception("Action '$action' non définie dans la classe $classController");
+        }
+    }
 
-  // Génère la vue associée au contrôleur courant
-  protected function showView($nameView,$dataView = array()) {
-    // Instanciation et génération de la vue
-    $view = new View($nameView);
-    $view->show($dataView);
-  }
+    // Méthode abstraite correspondant à l'action par défaut
+    // Oblige les classes dérivées à implémenter cette action par défaut
+    abstract public function index();
 
-  // Layouts
-  protected function useLayout($layout = "default"){
-    $this->layout = new Layout($layout);
-  }
+    // Génère la vue associée au contrôleur courant
+    protected function showView($nameView, $dataView = [])
+    {
+        // Instanciation et génération de la vue
+        $view = new View($nameView);
+        $view->show($dataView);
+    }
 
-  /**error views**/
-  public function showError($errorCode, $msg=null){
-    switch ($errorCode) {
+    // Layouts
+    protected function useLayout($layout = "default")
+    {
+        $this->layout = new Layout($layout);
+    }
+
+    /**error views**/
+    public function showError($errorCode, $msg = null)
+    {
+        switch ($errorCode) {
       case 404:
-        $data = array(
-          "error" => "404",
-          "message" => "La page que vous cherchez est introuvable"
-        );
+        $data = [
+            "error" => "404",
+            "message" => "La page que vous cherchez est introuvable"
+        ];
         break;
 
        case 401:
-        $data = array(
-          "error" => "401",
-          "message" => "Utilisateur non authentifié"
-        );
+        $data = [
+            "error" => "401",
+            "message" => "Utilisateur non authentifié"
+        ];
         break;
 
       case 403:
-        $data = array(
-          "error" => "403",
-          "message" => "Accès refusé"
-        );
+        $data = [
+            "error" => "403",
+            "message" => "Accès refusé"
+        ];
         break;
 
       case 500:
-        $data = array(
-          "error" => "500",
-          "message" => "Erreur serveur"
-        );
+        $data = [
+            "error" => "500",
+            "message" => "Erreur serveur"
+        ];
         break;
 
       case 503:
-        $data = array(
-          "error" => "503",
-          "message" => "Erreur serveur"
-        );
+        $data = [
+            "error" => "503",
+            "message" => "Erreur serveur"
+        ];
         break;
     }
-    if($msg=null)$data['message'] = $msg;
-    $this->error = true;
-    $view = new View("error");
-    $view->show($data);
+        if ($msg = null) {
+            $data['message'] = $msg;
+        }
+        $this->error = true;
+        $view = new View("error");
+        $view->show($data);
 
-    /**error showed stop the rest of the programme**/
-    exit;
-  }
+        /**error showed stop the rest of the programme**/
+        exit;
+    }
 }

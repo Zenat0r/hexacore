@@ -2,25 +2,25 @@
 
 namespace Hexacore\Core;
 
-class Config {
+class Config
+{
+    private $params;
+    private static $instance;
 
-  private $params;
-  private static $instance;
+    // Renvoie la valeur d'un paramètre de configuration
 
-  // Renvoie la valeur d'un paramètre de configuration
+    public static function get(string $filepath) : Config
+    {
+        if (is_null(self::$instance)) {
+            self::$instance = new Config($filepath);
+        }
 
-  public static function get(string $filepath) : Config
-  {
-    if (is_null(self::$instance)) {
-      self::$instance = new Config($filepath);
+        return self::$instance;
     }
 
-    return self::$instance;
-  }
-
-  private function __contructor(string $filepath = __DIR__ . "/../../App/config/app.json") : void
-  {
-    $string = file_get_contents($filepath);
-    $this->params = json_decode($string, true);
-  }
+    private function __contructor(string $filepath = __DIR__ . "/../../App/config/app.json") : void
+    {
+        $string = file_get_contents($filepath);
+        $this->params = json_decode($string, true);
+    }
 }

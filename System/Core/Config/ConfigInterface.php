@@ -2,8 +2,7 @@
 
 namespace Hexacore\Core\Config;
 
-interface ConfigInterface {
-
-  public static function get(string $filepath) : self;
-  
+interface ConfigInterface
+{
+    public static function get(string $filepath) : self;
 }
