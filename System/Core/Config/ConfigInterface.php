@@ -4,5 +4,10 @@ namespace Hexacore\Core\Config;
 
 interface ConfigInterface
 {
-    public static function get(string $filepath) : self;
+    /**
+     * @param $filepath string path of the configuration file
+     *
+     * @return array configuration file as an formated array
+     */
+    public static function get(string $filepath) : array;
 }
