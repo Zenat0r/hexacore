@@ -19,17 +19,17 @@ class JsonConfig implements ConfigInterface
             self::$instance = new JsonConfig($filepath);
         }
 
-        return (self::$instance)->getParams();
+        return (self::$instance)->getParam($filepath);
     }
 
     private function __contructor(string $filepath) : void
     {
         $string = file_get_contents($filepath);
-        $this->params = json_decode($string, true);
+        $this->params[$filepath] = json_decode($string, true);
     }
 
-    private function getParams(): array
+    private function getParam(string $filepath): array
     {
-        return $this->params;
+        return $this->params[$filepath];
     }
 }
