@@ -16,5 +16,6 @@ class Core
 
     private function __contructor() : void
     {
+        
     }
 }

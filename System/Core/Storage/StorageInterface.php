@@ -20,7 +20,7 @@ interface StorageInterface
      * @return boolean
      */
     public function remove($name) : boolean;
-    
+
     /**
      * Return the element or null
      *
