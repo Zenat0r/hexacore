@@ -9,7 +9,7 @@ class Core
 {
     private static $core;
 
-    private $config;
+    private $eventManager;
 
     public static function getCore() : Core
     {
@@ -21,6 +21,6 @@ class Core
 
     private function __contructor() : void
     {
-        $this->config = JsonConfig::get("system");
+        
     }
 }

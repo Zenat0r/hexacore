@@ -13,7 +13,7 @@ class JsonConfig implements ConfigInterface
     /**
      *  {@inheritDoc}
      */
-    public static function get(string $name = "app") : array
+    public static function get(string $name = "system") : array
     {
         $filepath = "../../../App/config/" . $name . ".json";
         if (is_null(self::$instance)) {
