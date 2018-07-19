@@ -5,9 +5,15 @@ namespace Hexacore\Core\Config;
 interface ConfigInterface
 {
     /**
-     * @param $filepath string path of the configuration file
+     * Return the configuration as an array by giving the name of a file.
+     * The file must be located in App/config/
+     * Subfolders cas be used to e.g : service/config
+     * Caution the file extension is not needed, is this handled by the 
+     * specific implementation of this interface
      *
-     * @return array configuration file as an formated array
+     * @param string $name
+     *
+     * @return array
      */
-    public static function get(string $filepath) : array;
+    public static function get(string $name) : array;
 }
