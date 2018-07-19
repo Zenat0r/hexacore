@@ -1,6 +1,8 @@
 <?php
 
-use Hexacore\Core\Request;
+namespace Hexacore\Core\Request;
+
+use Hexacore\Core\Storage\Session\Session;
 
 interface RequestInterface
 {

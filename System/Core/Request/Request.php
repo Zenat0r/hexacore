@@ -3,6 +3,7 @@
 namespace Hexacore\Core\Request;
 
 use Hexacore\Core\Request\RequestInterface;
+use Hexacore\Core\Storage\Session\Session;
 
 class Request implements RequestInterface
 {
@@ -17,6 +18,8 @@ class Request implements RequestInterface
     private $queries;
 
     private $posts;
+
+    private $session;
 
     private $files;
 
@@ -96,7 +99,11 @@ class Request implements RequestInterface
 
     public function getSession() : Session
     {
-        
+        if(is_null($this->session)){
+            $this->session = new Session();
+        }
+
+        return $this->session;
     }
 
     public function getServers() : array
