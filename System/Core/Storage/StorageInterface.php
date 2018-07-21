@@ -9,22 +9,22 @@ interface StorageInterface
      *
      * @param mixed $name
      * @param mixed $value
-     * @return boolean
+     * @return bool
      */
-    public function add($name, $value = null) : boolean;
+    public function add($name, $value = null) : bool;
 
     /**
      * Remove an element to the storage system, returun true if removed
      *
      * @param mixed $name
-     * @return boolean
+     * @return bool
      */
-    public function remove($name) : boolean;
+    public function remove($name) : bool;
 
     /**
      * Return the element or null
      *
-     * @param mixec $name
+     * @param mixed $name
      * @return mixed|null
      */
     public function get($name);

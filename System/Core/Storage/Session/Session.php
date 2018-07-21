@@ -4,7 +4,7 @@ namespace Hexacore\Core\Storage\Session;
 
 use Hexacore\Core\Storage\StorageInterface;
 
-class Session implements StorageInterface, SessionInterface
+class Session implements SessionInterface, StorageInterface
 {
     public function start() : void
     {
