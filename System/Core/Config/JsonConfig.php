@@ -18,8 +18,8 @@ class JsonConfig implements ConfigInterface
         $filepath = __DIR__ . "/../../../App/config/" . $name . ".json";
         if (self::$instance === null) {
             self::$instance = new JsonConfig($filepath);
-        } elseif (empty($this->params[$filepath])) {
-            $this->setParm($filepath);
+        } elseif (empty(self::$instance->params[$filepath])) {
+            self::$instance->setParm($filepath);
         }
 
         return self::$instance->getParam($filepath);
