@@ -6,6 +6,10 @@ use Hexacore\Core\Event\Subscriber\EventSubscriberInterface;
 
 class EventManager implements EventDispatcherInterface
 {
+    const CORE_BOOT = "CORE_BOOT";
+    const CORE_FIREWALL_PRE_CHECK = "CORE_FIREWALL_PRE_CHECK";
+    const CORE_FIREWALL_POST_CHECK = "CORE_FIREWALL_POST_CHECK";
+
     private $subscribers = [];
 
     public function addSubscriber(EventSubscriberInterface $subscriber) : void
