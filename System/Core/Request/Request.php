@@ -36,7 +36,7 @@ class Request implements RequestInterface
         return self::$instance;
     }
 
-    private function __contructor() : void
+    private function __contruct() : void
     {
         $this->server = $_SERVER;
         $this->fulleRequest = (isset($this->server['HTTPS']) && $this->server['HTTPS'] === 'on' ? "https" : "http") . "://$this->server[HTTP_HOST]$this->server[REQUEST_URI]";
