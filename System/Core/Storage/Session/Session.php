@@ -17,7 +17,7 @@ class Session implements StorageInterface, SessionInterface
         session_destroy();
     }
 
-    public function add($name, $value = null) : boolean
+    public function add($name, $value = null) : bool
     {
         $value = $value ?? $name;
         if (isset($_SESSION[$name])) {
