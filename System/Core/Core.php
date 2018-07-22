@@ -7,10 +7,13 @@ use Hexacore\Core\Config\JsonConfig;
 use Hexacore\Core\Request\RequestInterface;
 use Hexacore\Core\Event\Dispatcher\EventManager;
 use Hexacore\Core\Firewall\FirewallInterface;
+use Hexacore\Core\Storage\StorageInterface;
+use Hexacore\Core\Auth\AuthInterface;
 
 class Core
 {
     const defaultFirewall = "Hexacore\\Core\\Firewall\\DefaultFirewall";
+    const defaultAuth = "Hexacore\\Core\\Auth\\Auth";
 
     private static $core;
 
@@ -52,5 +55,16 @@ class Core
         }
 
         $this->eventManager->notify(EventManager::CORE_FIREWALL_POST_CHECK);
+
+        $authName = JsonConfig::get("app")["auth"]["class"] ?? Core::defaultAuth;
+        $auth = new $authName();
+
+        $this->eventManager->notify(EventManager::CORE_AUTH_PRE_AUTHENTICATE);
+
+        if ($auth instanceof AuthInterface) {
+            $auth->authenticate($request->getSession());
+        }
+
+        $this->eventManager->notify(EventManager::CORE_AUTH_POST_AUTHENTICATE);
     }
 }

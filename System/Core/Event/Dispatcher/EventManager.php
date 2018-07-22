@@ -9,6 +9,8 @@ class EventManager implements EventDispatcherInterface
     const CORE_BOOT = "CORE_BOOT";
     const CORE_FIREWALL_PRE_CHECK = "CORE_FIREWALL_PRE_CHECK";
     const CORE_FIREWALL_POST_CHECK = "CORE_FIREWALL_POST_CHECK";
+    const CORE_AUTH_PRE_AUTHENTICATE = "CORE_AUTH_PRE_AUTHENTICATE";
+    const CORE_AUTH_POST_AUTHENTICATE = "CORE_AUTH_POST_AUTHENTICATE";
 
     private $subscribers = [];
 
