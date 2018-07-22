@@ -6,6 +6,10 @@ use Hexacore\Core\Storage\StorageInterface;
 
 class Session implements SessionInterface, StorageInterface
 {
+    public function __construct()
+    {
+        $this->start();
+    }
     public function start() : void
     {
         session_start();
@@ -17,14 +21,14 @@ class Session implements SessionInterface, StorageInterface
         session_destroy();
     }
 
-    public function add($name, $value = null) : bool
+    public function add($name, $value = null)
     {
         $value = $value ?? $name;
-        if (isset($_SESSION[$name])) {
+        if (null !== $_SESSION[$name]) {
             return false;
         } else {
             $_SESSION[$name] = $value;
-            return true;
+            return $value;
         }
     }
 
