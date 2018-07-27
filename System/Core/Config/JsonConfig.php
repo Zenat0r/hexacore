@@ -6,7 +6,7 @@ class JsonConfig implements ConfigInterface
 {
     /** @var array */
     private $params;
-    
+
     /** @var JsonConfig */
     private static $instance;
 
@@ -15,7 +15,7 @@ class JsonConfig implements ConfigInterface
      */
     public static function get(string $name = "system") : array
     {
-        $filepath = __DIR__ . "/../../../App/config/" . $name . ".json";
+        $filepath = __DIR__ . "/../../../App/config/$name.json";
         if (self::$instance === null) {
             self::$instance = new JsonConfig($filepath);
         } elseif (empty(self::$instance->params[$filepath])) {
