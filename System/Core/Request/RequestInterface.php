@@ -32,9 +32,9 @@ interface RequestInterface
     /**
      * Return the $_GET array
      *
-     * @return array
-     */ 
-    public function getQueries() : array;
+     * @return array|null
+     */
+    public function getQueries() : ?array;
 
     /**
      * Return specific value of $_GET or null
@@ -47,9 +47,9 @@ interface RequestInterface
     /**
      * Return the $_POST array
      *
-     * @return array
+     * @return array|null
      */
-    public function getPosts() : array;
+    public function getPosts() : ?array;
 
     /**
      * Return specific value of $_POST or null
@@ -84,9 +84,9 @@ interface RequestInterface
     /**
      * Return the $_COOKIE array
      *
-     * @return array
+     * @return array|null
      */
-    public function getCookies() : array;
+    public function getCookies() : ?array;
 
     /**
      * Return specific value of $_COOKIE or null
@@ -99,9 +99,9 @@ interface RequestInterface
     /**
      * Return the $_FILES array
      *
-     * @return array
+     * @return array|null
      */
-    public function getFiles() : array;
+    public function getFiles() : ?array;
 
     /**
      * Return specific value of $_FILES or null

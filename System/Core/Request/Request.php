@@ -2,7 +2,6 @@
 
 namespace Hexacore\Core\Request;
 
-use Hexacore\Core\Request\RequestInterface;
 use Hexacore\Core\Storage\Session\Session;
 
 class Request implements RequestInterface
@@ -29,14 +28,14 @@ class Request implements RequestInterface
 
     public static function get() : Request
     {
-        if(is_null(self::$instance)){
+        if (is_null(self::$instance)) {
             self::$instance = new Request();
         }
 
         return self::$instance;
     }
 
-    private function __contruct() : void
+    private function __construct()
     {
         $this->server = $_SERVER;
         $this->fulleRequest = (isset($this->server['HTTPS']) && $this->server['HTTPS'] === 'on' ? "https" : "http") . "://$this->server[HTTP_HOST]$this->server[REQUEST_URI]";
@@ -51,7 +50,7 @@ class Request implements RequestInterface
     private function getHeaders() : array
     {
         $server = $this->server ?? $_SERVER;
-        
+
         foreach ($server as $key => $value) {
             if (preg_match("/^HTTP_.*$/", $key)) {
                 $headers[str_replace("HTTP_", "", $key)] = $value;
@@ -77,7 +76,7 @@ class Request implements RequestInterface
         return $this->header[$name];
     }
 
-    public function getQueries() : array
+    public function getQueries() : ?array
     {
         return $this->queries;
     }
@@ -87,7 +86,7 @@ class Request implements RequestInterface
         return $this->queries[$name];
     }
 
-    public function getPosts() : array
+    public function getPosts() : ?array
     {
         return $this->posts;
     }
@@ -99,7 +98,7 @@ class Request implements RequestInterface
 
     public function getSession() : Session
     {
-        if(is_null($this->session)){
+        if (is_null($this->session)) {
             $this->session = new Session();
         }
 
@@ -116,7 +115,7 @@ class Request implements RequestInterface
         return $this->server[$name];
     }
 
-    public function getCookies() : array
+    public function getCookies() : ?array
     {
         return $this->cookies;
     }
@@ -126,7 +125,7 @@ class Request implements RequestInterface
         return $this->cookies[$name];
     }
 
-    public function getFiles() : array
+    public function getFiles() : ?array
     {
         return $this->files;
     }
