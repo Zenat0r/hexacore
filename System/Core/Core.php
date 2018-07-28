@@ -9,6 +9,8 @@ use Hexacore\Core\Event\Dispatcher\EventManager;
 use Hexacore\Core\Firewall\FirewallInterface;
 use Hexacore\Core\Storage\StorageInterface;
 use Hexacore\Core\Auth\AuthInterface;
+use Hexacore\Core\Router\Router;
+use Hexacore\Core\Response\ResponseInterface;
 
 class Core
 {
@@ -41,7 +43,7 @@ class Core
         $this->eventManager->notify(EventManager::CORE_BOOT);
     }
 
-    public function handle(RequestInterface $request) : void
+    public function handle(RequestInterface $request) : ResponseInterface
     {
         $firewallName = JsonConfig::get("app")["firewall"] ?? Core::defaultFirewall;
         $firewall = new $firewallName();
@@ -66,5 +68,15 @@ class Core
         }
 
         $this->eventManager->notify(EventManager::CORE_AUTH_POST_AUTHENTICATE);
+
+        $router = new Router($auth);
+
+        $this->eventManager->notify(EventManager::CORE_ROUTER_PRE_MATCH);
+
+        $response = $router->match($request);
+
+        $this->eventManager->notify(EventManager::CORE_ROUTER_POST_MATCH);
+
+        return $response->send($request);
     }
 }

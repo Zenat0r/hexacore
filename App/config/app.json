@@ -1,4 +1,7 @@
 {
     "name": "first-hexacore",
-    "secret": ""
+    "secret": "",
+    "eventSubscriber": [
+        
+    ]
 }

@@ -4,10 +4,24 @@ namespace Hexacore\Core\Router;
 
 use Hexacore\Core\Request\RequestInterface;
 use Hexacore\Core\Config\JsonConfig;
+use Hexacore\Core\DI\DIC;
+use Hexacore\Core\Controller;
+use Hexacore\Core\Auth\AuthInterface;
+use Hexacore\Core\Response\ResponseInterface;
 
 class Router implements RouterInterface
 {
-    public function match(RequestInterface $request)
+    private $dic;
+
+    private $auth;
+
+    public function __construct(AuthInterface $auth)
+    {
+        $this->dic = new DIC();
+        $this->auth = $auth;
+    }
+
+    public function match(RequestInterface $request): ResponseInterface
     {
         $url = $request->getQuery("_url");
         $items = explode("/", $url);
@@ -15,20 +29,66 @@ class Router implements RouterInterface
         if (empty($items[0])) {
             $items = [];
         }
-        
+
         /* Default mapping */
-        $controllerName = $items[0] ?? JsonConfig::get()["defaultController"];
-        $actionName = $items[1] ?? JsonConfig::get()["defaultAction"];
+        $controllerName = array_shift($items) ?? JsonConfig::get()["defaultController"];
+        $actionName = array_shift($items) ?? JsonConfig::get()["defaultAction"];
+
+        $controllerName = ucfirst(strtolower($controllerName)) . "Controller";
+        $actionName = strtolower($actionName);
 
         $controllerPath = __DIR__ . "/../../../App/src/Controller/$controllerName.php";
 
         if (file_exists($controllerPath)) {
             $controllerNamespace = "\\App\\Controller\\$controllerName";
 
-            $controller = new $controllerNamespace();
+            $controller = $this->dic->get($controllerNamespace);
+
+            if (!$controller instanceof Controller) {
+                throw new \Exception("Controller not a child of Controller class");
+            }
+
+            $controller->initialize($request, $this->dic, $this->auth);
+
             if (method_exists($controller, $actionName)) {
-                $responce = $controller->{$actionName}();
-                return $responce;
+                $reflectedAction = new \ReflectionMethod($controller, $actionName);
+                $parameters = [];
+
+                foreach ($reflectedAction->getParameters() as $param) {
+                    if ($param->getClass()) {
+                        $className = $param->getClass()->getName();
+                        $parameters[] = $this->dic->get($className);
+                    } else {
+                        $parameter = array_shift($items);
+                        if ($parameter === null && $param->isDefaultValueAvailable()) {
+                            $parameters[] = $param->getDefaultValue();
+                        } elseif ($parameter === null) {
+                            throw new \Exception("Missing getter");
+                        } else {
+                            $paramType = $param->getType()->getName();
+
+                            if ($paramType === "int") {
+                                $parameters[] = (int)$parameter;
+                            } elseif ($paramType === "double") {
+                                $parameters[] = (double)$parameter;
+                            } elseif ($paramType === "float") {
+                                $parameters[] = (float)$parameter;
+                            } else {
+                                $parameters[] = $parameter;
+                            }
+                        }
+                    }
+                }
+
+                if (!empty($items)) {
+                    return "wrong";
+                }
+
+                $actionReturn = $reflectedAction->invokeArgs($controller, $parameters);
+
+                if ($actionReturn instanceof ResponseInterface) {
+                    return $actionReturn;
+                }
             } else {
                 //throw
             }

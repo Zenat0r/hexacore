@@ -22,7 +22,7 @@ abstract class Controller
         $this->auth = $auth;
     }
 
-    public function isGranted(StorageInterface $storage, string $role): bool
+    protected function isGranted(StorageInterface $storage, string $role): bool
     {
         return $this->auth->isGranted($storage, $role);
     }
