@@ -1,0 +1,4 @@
+{
+    "Hexacore\\Core\\Storage\\Session\\SessionInterface": "Hexacore\\Core\\Storage\\Session\\Session",
+    "Hexacore\\Core\\Auth\\AuthInterface": "Hexacore\\Core\\Auth\\Auth"
+}
