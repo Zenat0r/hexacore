@@ -13,7 +13,7 @@ class JsonConfig implements ConfigInterface
     /**
      *  {@inheritDoc}
      */
-    public static function get(string $name = "system") : array
+    public static function get(string $name = "system") : iterable
     {
         $filepath = __DIR__ . "/../../../App/config/$name.json";
         if (self::$instance === null) {
@@ -36,7 +36,7 @@ class JsonConfig implements ConfigInterface
         $this->params[$filepath] = json_decode($string, true);
     }
 
-    private function getParam(string $filepath): array
+    private function getParam(string $filepath): iterable
     {
         return $this->params[$filepath];
     }

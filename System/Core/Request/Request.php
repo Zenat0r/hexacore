@@ -47,7 +47,7 @@ class Request implements RequestInterface
         $this->cookies = $_COOKIE;
     }
 
-    private function getHeaders() : array
+    private function getHeaders() : iterable
     {
         $server = $this->server ?? $_SERVER;
 
@@ -76,7 +76,7 @@ class Request implements RequestInterface
         return $this->header[$name];
     }
 
-    public function getQueries() : ?array
+    public function getQueries() : ?iterable
     {
         return $this->queries;
     }
@@ -86,7 +86,7 @@ class Request implements RequestInterface
         return $this->queries[$name];
     }
 
-    public function getPosts() : ?array
+    public function getPosts() : ?iterable
     {
         return $this->posts;
     }
@@ -105,7 +105,7 @@ class Request implements RequestInterface
         return $this->session;
     }
 
-    public function getServers() : array
+    public function getServers() : iterable
     {
         return $this->server;
     }
@@ -115,7 +115,7 @@ class Request implements RequestInterface
         return $this->server[$name];
     }
 
-    public function getCookies() : ?array
+    public function getCookies() : ?iterable
     {
         return $this->cookies;
     }
@@ -125,7 +125,7 @@ class Request implements RequestInterface
         return $this->cookies[$name];
     }
 
-    public function getFiles() : ?array
+    public function getFiles() : ?iterable
     {
         return $this->files;
     }

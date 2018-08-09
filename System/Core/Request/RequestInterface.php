@@ -34,7 +34,7 @@ interface RequestInterface
      *
      * @return array|null
      */
-    public function getQueries() : ?array;
+    public function getQueries() : ?iterable;
 
     /**
      * Return specific value of $_GET or null
@@ -49,7 +49,7 @@ interface RequestInterface
      *
      * @return array|null
      */
-    public function getPosts() : ?array;
+    public function getPosts() : ?iterable;
 
     /**
      * Return specific value of $_POST or null
@@ -71,7 +71,7 @@ interface RequestInterface
      *
      * @return array
      */
-    public function getServers() : array;
+    public function getServers() : iterable;
 
     /**
      * Return specific value of $_SERVER or null
@@ -86,7 +86,7 @@ interface RequestInterface
      *
      * @return array|null
      */
-    public function getCookies() : ?array;
+    public function getCookies() : ?iterable;
 
     /**
      * Return specific value of $_COOKIE or null
@@ -101,7 +101,7 @@ interface RequestInterface
      *
      * @return array|null
      */
-    public function getFiles() : ?array;
+    public function getFiles() : ?iterable;
 
     /**
      * Return specific value of $_FILES or null

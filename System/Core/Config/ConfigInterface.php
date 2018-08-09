@@ -15,5 +15,5 @@ interface ConfigInterface
      *
      * @return array
      */
-    public static function get(string $name) : array;
+    public static function get(string $name) : iterable;
 }
