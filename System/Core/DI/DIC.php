@@ -4,7 +4,6 @@ namespace Hexacore\Core\DI;
 
 use Hexacore\Core\Config\JsonConfig;
 
-
 class DIC
 {
     private $instances;
@@ -14,8 +13,8 @@ class DIC
         $reflectedClass = new \ReflectionClass($name);
 
         if ($reflectedClass->isInstantiable()) {
-            return $this->instantiate($reflectedClass);            
-        } elseif ($reflectedClass->isInterface()){
+            return $this->instantiate($reflectedClass);
+        } elseif ($reflectedClass->isInterface() || $reflectedClass->isAbstract()) {
             $class = JsonConfig::get("autowiring")[$name];
 
             return $this->instantiate(new \ReflectionClass($class));
@@ -24,7 +23,8 @@ class DIC
         }
     }
 
-    private function instantiate(\ReflectionClass $reflectedClass){
+    private function instantiate(\ReflectionClass $reflectedClass)
+    {
         $reflectedConstructor = $reflectedClass->getConstructor();
 
         if ($reflectedConstructor) {
@@ -38,7 +38,7 @@ class DIC
                 }
             }
             return $reflectedClass->newInstanceArgs($parameters);
-        }else {
+        } else {
             return $reflectedClass->newInstance();
         }
     }
