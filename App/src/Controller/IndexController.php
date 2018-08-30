@@ -16,6 +16,6 @@ class indexController extends Controller
             $message = "Keep looking for the answer to the univers";
         }
 
-        return new Response($message);
+        return $this->render("index/index.php");
     }
 }
