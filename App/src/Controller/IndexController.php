@@ -9,8 +9,12 @@ class indexController extends Controller
 {
     public function index(int $num = 0): Response
     {
-        return $this->render("index/index.php", [
-            "num" => $num
+        return $this->render([
+            "main" => "index/index.php",
+            "context" => "index/index2.php"
+        ], [
+            ["num" => $num],
+            ["num" => 1337]
         ]);
     }
 }

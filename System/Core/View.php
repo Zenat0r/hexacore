@@ -14,7 +14,8 @@ class View
     public function init(array $views,array $data, string $base): void
     {
         foreach ($views as $key => $view) {
-            $this->blocks["block" . ucfirst(++$key)] = $view;
+            if(is_int($key)) $this->blocks["block" . ucfirst(++$key)] = $view;
+            else $this->blocks[$key] = $view;
         }
         $this->data = $data;
         $this->base = $base;

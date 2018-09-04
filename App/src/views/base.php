@@ -10,6 +10,9 @@
     <header>
         <h1>Answer to the univers :</h1>
     </header>
-    <main><?php echo $block1?></main>
+    <main>
+        <?php echo $main?>
+        <?php echo $context?>
+    </main>
 </body>
 </html>

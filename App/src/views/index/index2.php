@@ -1,0 +1,1 @@
+<?php echo "Contextual variables $num" ?>
