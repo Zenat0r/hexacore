@@ -15,7 +15,8 @@ interface EventSubscriberInterface
     /**
      * function exectuted when the event is dispatch
      *
+     * @param Object $object
      * @return void
      */
-    public function dispatch();
+    public function dispatch($object);
 }

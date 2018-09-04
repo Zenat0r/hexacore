@@ -11,6 +11,7 @@ use Hexacore\Core\Storage\StorageInterface;
 use Hexacore\Core\Auth\AuthInterface;
 use Hexacore\Core\Router\Router;
 use Hexacore\Core\Response\ResponseInterface;
+use Hexacore\Core\DI\DIC;
 
 class Core
 {
@@ -34,9 +35,11 @@ class Core
         $this->eventManager = $eventManager;
 
         $subs = JsonConfig::get()["eventSubscriber"];
+
+        $dic = new DIC();
         if (!empty($subs)) {
             foreach ($subs as $sub) {
-                $this->eventManager->addSubscriber(new $sub());
+                $this->eventManager->addSubscriber($dic->get($sub));
             }
         }
 
@@ -48,7 +51,7 @@ class Core
         $firewallName = JsonConfig::get("app")["firewall"] ?? Core::defaultFirewall;
         $firewall = new $firewallName();
 
-        $this->eventManager->notify(EventManager::CORE_FIREWALL_PRE_CHECK);
+        $this->eventManager->notify(EventManager::CORE_FIREWALL_PRE_CHECK, $firewall);
 
         if ($firewall instanceof FirewallInterface) {
             $firewall->check($request);
@@ -56,26 +59,26 @@ class Core
             //throw error
         }
 
-        $this->eventManager->notify(EventManager::CORE_FIREWALL_POST_CHECK);
+        $this->eventManager->notify(EventManager::CORE_FIREWALL_POST_CHECK, $firewall);
 
         $authName = JsonConfig::get("app")["auth"]["class"] ?? Core::defaultAuth;
         $auth = new $authName();
 
-        $this->eventManager->notify(EventManager::CORE_AUTH_PRE_AUTHENTICATE);
+        $this->eventManager->notify(EventManager::CORE_AUTH_PRE_AUTHENTICATE, $auth);
 
         if ($auth instanceof AuthInterface) {
             $auth->authenticate($request->getSession());
         }
 
-        $this->eventManager->notify(EventManager::CORE_AUTH_POST_AUTHENTICATE);
+        $this->eventManager->notify(EventManager::CORE_AUTH_POST_AUTHENTICATE, $auth);
 
         $router = new Router($auth);
 
-        $this->eventManager->notify(EventManager::CORE_ROUTER_PRE_MATCH);
+        $this->eventManager->notify(EventManager::CORE_ROUTER_PRE_MATCH, $router);
 
         $response = $router->match($request);
 
-        $this->eventManager->notify(EventManager::CORE_ROUTER_POST_MATCH);
+        $this->eventManager->notify(EventManager::CORE_ROUTER_POST_MATCH, $response);
 
         return $response->send($request);
     }

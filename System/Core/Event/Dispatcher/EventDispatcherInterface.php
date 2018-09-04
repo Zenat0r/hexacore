@@ -26,7 +26,8 @@ interface EventDispatcherInterface
      * Notify subscriber if it is sensible to
      *
      * @param string $event
+     * @param Object $object
      * @return void
      */
-    public function notify(string $event): void;
+    public function notify(string $event, $object = null): void;
 }

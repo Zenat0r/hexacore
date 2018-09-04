@@ -26,11 +26,11 @@ class EventManager implements EventDispatcherInterface
         //why remove ?
     }
 
-    public function notify(string $event) : void
+    public function notify(string $event, $object = null) : void
     {
         foreach ($this->subscribers as $sub) {
             if ($sub->isNotify($event)) {
-                $sub->dispatch();
+                $sub->dispatch($object);
             }
         }
     }
