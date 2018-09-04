@@ -39,9 +39,13 @@ abstract class Controller
             $view = [$view];
         }
 
+        if(is_array($data) && !is_array(reset($data))){
+            $data = [$data];
+        }
+
         $viewCls = $this->injector->get(View::class);
 
-        $viewCls->init($view, $options["baseView"]);
+        $viewCls->init($view,$data, $options["baseView"]);
 
         return $viewCls->create();
     }

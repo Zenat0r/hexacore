@@ -9,13 +9,8 @@ class indexController extends Controller
 {
     public function index(int $num = 0): Response
     {
-        //your logic
-        if ($num === 42) {
-            $message = "Answer to the univers $num";
-        } else {
-            $message = "Keep looking for the answer to the univers";
-        }
-
-        return $this->render("index/index.php");
+        return $this->render("index/index.php", [
+            "num" => $num
+        ]);
     }
 }
