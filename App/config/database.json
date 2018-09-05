@@ -1,7 +1,7 @@
 {
-    "dbname": "name",
-    "host": "localhost",
+    "dbname": "myDb",
+    "host": "db",
     "port": 3306,
-    "user": "user",
-    "password": "azertyop",
+    "user": "hexacore",
+    "password": "test"
 }

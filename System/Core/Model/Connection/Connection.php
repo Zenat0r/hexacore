@@ -26,26 +26,31 @@ class Connection implements ConnectionInterface
 
     public function establish()
     {
-        return new \PDO("mysql:dbname={$this->db};host={$this->host}:{$this->port}", $this->user, $this->pwd);
+        return new \PDO("mysql:host={$this->host}:{$this->port};dbname={$this->db}", $this->user, $this->pwd);
     }
 
-    public function setDb(string $name){
+    public function setDb(string $name): void 
+    {
         $this->db = $name;
     }
 
-    public function setUser(string $name){
+    public function setUser(string $name): void
+    {
         $this->user = $name;
     }
 
-    public function setPwd(string $pwd){
+    public function setPwd(string $pwd): void
+    {
         $this->pwd = $pwd;
     }
 
-    public function setHost(string $host){
+    public function setHost(string $host): void
+    {
         $this->host = $host;
     }
 
-    public function setPort(int $port){
+    public function setPort(int $port): void
+    {
         $this->port = $port;
     }
 }

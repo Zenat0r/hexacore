@@ -24,14 +24,10 @@ abstract class AbstractModel
         $this->connection = $connection;
     }
 
-    public function getQuery()
-    {
-        return $this->query;
-    }
-
     public function execute(string $query, ?array $params = null)
     {
         $connect = $this->connection->establish();
+        $connect->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
         if (null == $params) {
             $result = $connect->query($query);
@@ -46,7 +42,7 @@ abstract class AbstractModel
         $this->fields = null;
         $this->sets = null;
 
-        return $result;
+        return $result->fetchAll();
     }
 
     public function where(string $selector, $value, string $operator = "="): AbstractModel
