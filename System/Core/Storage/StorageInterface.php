@@ -11,7 +11,7 @@ interface StorageInterface
      * @param mixed $value
      * @return mixed
      */
-    public function add($name, $value = null);
+    public function add(string $name, $value = null);
 
     /**
      * Remove an element to the storage system, returun true if removed
@@ -19,7 +19,7 @@ interface StorageInterface
      * @param mixed $name
      * @return bool
      */
-    public function remove($name) : bool;
+    public function remove(string $name) : bool;
 
     /**
      * Return the element or null
@@ -27,5 +27,5 @@ interface StorageInterface
      * @param mixed $name
      * @return mixed|null
      */
-    public function get($name);
+    public function get(string $name);
 }

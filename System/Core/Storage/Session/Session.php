@@ -21,7 +21,7 @@ class Session implements SessionInterface, StorageInterface
         session_destroy();
     }
 
-    public function add($name, $value = null)
+    public function add(string $name, $value = null)
     {
         $value = $value ?? $name;
         if (null !== $_SESSION[$name]) {
@@ -32,7 +32,7 @@ class Session implements SessionInterface, StorageInterface
         }
     }
 
-    public function remove($name) : bool
+    public function remove(string $name) : bool
     {
         if (isset($_SESSION[$name])) {
             unset($_SESSION[$name]);
@@ -42,7 +42,7 @@ class Session implements SessionInterface, StorageInterface
         }
     }
 
-    public function get($name)
+    public function get(string $name)
     {
         return $_SESSION[$name];
     }

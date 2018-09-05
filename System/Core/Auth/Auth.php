@@ -4,6 +4,7 @@ namespace Hexacore\Core\Auth;
 
 use Hexacore\Core\Storage\StorageInterface;
 use Hexacore\Core\Config\JsonConfig;
+use Hexacore\Core\Response\Response;
 
 class Auth implements AuthInterface
 {
@@ -21,7 +22,7 @@ class Auth implements AuthInterface
     {
         $role = strtoupper($role);
         if (!in_array($role, $this->roles)) {
-            //throw role doesn't exist
+            throw new \Exception("Role doesn't exist", Response::UNAUTHORIZED);
         }
 
         if ($storage->get("USER_ROLE") === $role) {
