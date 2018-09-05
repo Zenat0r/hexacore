@@ -6,11 +6,11 @@ use Hexacore\Core\Request\RequestInterface;
 
 class Response implements ResponseInterface
 {
-    private $headers;
+    protected $headers;
 
-    private $code;
+    protected $code;
 
-    private $content;
+    protected $content;
 
     //https://http.cat
     const CONTINUE = 100;

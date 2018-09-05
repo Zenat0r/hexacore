@@ -32,8 +32,12 @@ class JsonConfig implements ConfigInterface
 
     private function setParm(string $filepath) : void
     {
-        $string = file_get_contents($filepath);
-        $this->params[$filepath] = json_decode($string, true);
+        if (file_exists($filepath)) {
+            $string = file_get_contents($filepath);
+            $this->params[$filepath] = json_decode($string, true);
+        } else {
+            throw new \Exception("Config file missing");
+        }
     }
 
     private function getParam(string $filepath): iterable

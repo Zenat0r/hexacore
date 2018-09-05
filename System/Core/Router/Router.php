@@ -8,6 +8,7 @@ use Hexacore\Core\DI\DIC;
 use Hexacore\Core\Controller;
 use Hexacore\Core\Auth\AuthInterface;
 use Hexacore\Core\Response\ResponseInterface;
+use Hexacore\Core\Response\Response;
 
 class Router implements RouterInterface
 {
@@ -45,7 +46,7 @@ class Router implements RouterInterface
             $controller = $this->dic->get($controllerNamespace);
 
             if (!$controller instanceof Controller) {
-                throw new \Exception("Controller not a child of Controller class");
+                throw new \Exception("Controller not a child of Controller class", Response::INTERNAL_SERVER_ERROR);
             }
 
             $controller->initialize($request, $this->dic, $this->auth);
@@ -63,7 +64,7 @@ class Router implements RouterInterface
                         if ($parameter === null && $param->isDefaultValueAvailable()) {
                             $parameters[] = $param->getDefaultValue();
                         } elseif ($parameter === null) {
-                            throw new \Exception("Missing getter");
+                            throw new \Exception("Missing getters", Response::NOT_FOUND);
                         } else {
                             $paramType = $param->getType()->getName();
 
@@ -81,7 +82,7 @@ class Router implements RouterInterface
                 }
 
                 if (!empty($items)) {
-                    return "wrong";
+                    throw new \Exception("Too many getters", Response::NOT_FOUND);
                 }
 
                 $actionReturn = $reflectedAction->invokeArgs($controller, $parameters);
@@ -90,9 +91,10 @@ class Router implements RouterInterface
                     return $actionReturn;
                 }
             } else {
-                //throw
+                throw new \Exception("Action does not exist", Response::NOT_FOUND);
             }
         } else {
+            throw new \Exception("Controller file does not exist", Response::NOT_FOUND);
         }
     }
 }
