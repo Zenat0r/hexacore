@@ -128,7 +128,7 @@ class Response implements ResponseInterface
         599 => "Network connect timeout error"
     ];
 
-    public function __construct(string $content, array $headers = [], int $code = 200)
+    public function __construct(string $content, array $headers = [], $code = 200)
     {
         $this->content = $content;
         $this->headers = $headers;
