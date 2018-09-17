@@ -24,7 +24,12 @@ abstract class AbstractModel
         $this->connection = $connection;
     }
 
-    public function execute(string $query, ?array $params = null)
+    public function getQuery(): string
+    {
+        return $this->query;
+    }
+
+    protected function execute(string $query, ?array $params = null)
     {
         $connect = $this->connection->establish();
         $connect->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
@@ -42,7 +47,7 @@ abstract class AbstractModel
         $this->fields = null;
         $this->sets = null;
 
-        return $result->fetchAll();
+        return $result;
     }
 
     public function where(string $selector, $value, string $operator = "="): AbstractModel
@@ -94,7 +99,7 @@ abstract class AbstractModel
 
     public function fields(array $fields): AbstractModel
     {
-        foreach($fields as $key => $value){
+        foreach ($fields as $key => $value) {
             $this->fieldExist($key);
         }
 
@@ -108,7 +113,7 @@ abstract class AbstractModel
         return $this->fields([$field]);
     }
 
-    public function get(): iterable
+    public function get(int $limit = null, int $offset = 0): iterable
     {
         if (null == $this->fields) {
             $this->fields = ["*"];
@@ -123,11 +128,25 @@ abstract class AbstractModel
 
         if (!empty($this->where)) {
             $this->query .= $this->where;
-
-            return $this->execute($this->query, $this->params);
-        } else {
-            return $this->execute($this->query);
         }
+
+        if (!empty($limit)) {
+            $this->query .= " LIMIT {$limit} OFFSET {$offset}";
+        }
+
+        return $this->execute($this->query, $this->params)->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function getSingle(string $selector, $value): iterable
+    {
+        $this->fieldExist($selector);
+
+        $this->query = "SELECT * FROM {$this->table}";
+
+        $this->query .= " WHERE {$selector}=:get_single_{$selector}";
+        $this->params[":get_single_{$selector}"] = $value;
+
+        return reset($this->execute($this->query, $this->params)->fetchAll(\PDO::FETCH_ASSOC));
     }
 
     public function delete()
@@ -143,61 +162,63 @@ abstract class AbstractModel
         }
     }
 
-    public function insert(){
-
-        if(null == $this->sets){
+    public function insert()
+    {
+        if (null == $this->sets) {
             throw new \Exception("no values to insert");
         }
 
-        $this->query = "INSERT INTO {$this->table} (";
+        $this->query = "INSERT INTO {$this->table}(";
 
-        foreach($this->sets as $field => $value){
+        foreach ($this->sets as $field => $value) {
             $this->query .= "{$field}, ";
         }
 
-        $this->query = substr($this->query, 0, -1) . ")";
+        $this->query = rtrim($this->query, ", ") . ")";
 
-        $this->query = " VALUES (";
+        $this->query .= " VALUES(";
 
-        foreach($this->sets as $field => $value){
-            $this->query .= ":insert_{$field}, ";
-            $this->$params[":insert_{$field}"] = $value;
+        foreach ($this->sets as $value) {
+            $this->query .= "'{$value}', ";
         }
 
-        $this->query = substr($this->query, 0, -1) . ")";
+        $this->query = rtrim($this->query, ", ") . ")";
 
         return $this->execute($this->query, $this->params);
     }
 
     public function update(bool $withWhere = true)
     {
-        if(null == $this->sets){
+        if (null == $this->sets) {
             throw new \Exception("no values to update");
         }
 
-        if(null == $this->where && $withWhere){
+        if (null == $this->where && $withWhere) {
             throw new \Exception("Warning: no where statement (add arg false to run anyway)");
         }
 
         $this->query = "UPDATE {$this->table} SET";
 
-        foreach($this->sets as $field => $value){
-            $this->query .= " {$field}=:update_{$field}";
+        foreach ($this->sets as $field => $value) {
+            $this->query .= " {$field}=:update_{$field}, ";
             $this->params[":update_{$field}"] = $value;
         }
+
+        $this->query = rtrim($this->query, ", ");
 
         $this->query .= $this->where ?? "";
 
         return $this->execute($this->query, $this->params);
-    }    
+    }
 
     private function fieldExist(string $name)
     {
         $classParams = get_object_vars($this);
 
-        $tableFields = array_diff_key($array_object, ["connection" => '', "table" => '', "query" => '', "params" => '', "fileds" => '', "where" => '', "sets" => '']);
-        $tableFields = array_filter($array_object, 'strlen');
+        $tableFields = array_diff_key($classParams, ["connection" => '', "table" => '', "query" => '', "params" => '', "fileds" => '', "where" => '', "sets" => '']);
 
-        if(!in_array($name, $classParams)) throw new \Exception("Field $name doesn' exist");
+        if (!array_key_exists($name, $tableFields)) {
+            throw new \Exception("Field $name doesn't exist");
+        }
     }
 }

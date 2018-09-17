@@ -4,14 +4,13 @@ namespace Hexacore\Core\Model;
 
 use Hexacore\Core\Storage\StorageInterface;
 
-
 class StorableModel implements StorageInterface
 {
     private $idField;
     private $fields;
     private $model;
 
-    public function __construct(string $idField, array $storage, AbstractStorageModel $model)
+    public function __construct(string $idField, array $storage, AbstractModel $model)
     {
         $this->idField = $idField;
         $this->fields = $storage;
@@ -22,18 +21,26 @@ class StorableModel implements StorageInterface
     {
         $this->fieldExist($name);
 
-        $this->fiedfieldss[$name] = $value ?? $name;
+        $this->fields[$name] = $value ?? $name;
 
-        $this->model->update($this);
+        $model = $this->model->where($this->idField, $this->fields[$this->idField]);
+
+        $fields = array_diff_key($this->fields, [$this->idField => ""]);
+        foreach ($fields as $field => $val) {
+            $model->set($field, $val);
+        }
+        $model->update();
     }
 
     public function remove(string $name) : bool
     {
         $this->fieldExist($name);
 
-        unset($this->fields[$name]);
+        $this->model->where($this->idField, $this->fields[$this->idField])
+                    ->set($this->fields[$name], null)
+                    ->update();
 
-        $this->model->remove($this);
+        unset($this->fields[$name]);
     }
 
     public function get(string $name)
@@ -43,20 +50,10 @@ class StorableModel implements StorageInterface
         return $this->fields[$name];
     }
 
-    public function getIdField()
-    {
-        return $storage[$this->idField];
-    }
-
-    public function insert()
-    {
-        $this->model->insert($this);
-    }
-
     private function fieldExist(string $name)
     {
-        if(!array_key_exists($name, $this->fields)){
-            throw new \Exception("Filed doesn't exist");
+        if (!array_key_exists($name, $this->fields)) {
+            throw new \Exception("Field doesn't exist");
         }
     }
 }
