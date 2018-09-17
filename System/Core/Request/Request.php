@@ -3,6 +3,8 @@
 namespace Hexacore\Core\Request;
 
 use Hexacore\Core\Storage\Session\Session;
+use Hexacore\Core\Storage\Cookie\Cookie;
+use Hexacore\Core\Storage\Cookie\CookieInterface;
 
 class Request implements RequestInterface
 {
@@ -44,7 +46,6 @@ class Request implements RequestInterface
         $this->queries = $_GET;
         $this->posts = $_POST;
         $this->files = $_FILES;
-        $this->cookies = $_COOKIE;
     }
 
     private function getHeaders() : iterable
@@ -115,14 +116,13 @@ class Request implements RequestInterface
         return $this->server[$name];
     }
 
-    public function getCookies() : ?iterable
+    public function getCookie(): CookieInterface
     {
-        return $this->cookies;
-    }
+        if (is_null($this->cookie)) {
+            $this->cookie = new Cookie();
+        }
 
-    public function getCookie(string $name)
-    {
-        return $this->cookies[$name];
+        return $this->cookie;
     }
 
     public function getFiles() : ?iterable

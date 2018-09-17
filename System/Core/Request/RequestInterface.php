@@ -3,6 +3,7 @@
 namespace Hexacore\Core\Request;
 
 use Hexacore\Core\Storage\Session\Session;
+use Hexacore\Core\Storage\Cookie\CookieInterface;
 
 interface RequestInterface
 {
@@ -82,19 +83,11 @@ interface RequestInterface
     public function getServer(string $name);
 
     /**
-     * Return the $_COOKIE array
+     * Return cookie object
      *
-     * @return array|null
+     * @return CookieInterface
      */
-    public function getCookies() : ?iterable;
-
-    /**
-     * Return specific value of $_COOKIE or null
-     *
-     * @param string $name
-     * @return mixed|null
-     */
-    public function getCookie(string $name);
+    public function getCookie(): CookieInterface;
 
     /**
      * Return the $_FILES array
