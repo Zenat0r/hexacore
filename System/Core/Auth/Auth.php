@@ -5,6 +5,7 @@ namespace Hexacore\Core\Auth;
 use Hexacore\Core\Storage\StorageInterface;
 use Hexacore\Core\Config\JsonConfig;
 use Hexacore\Core\Response\Response;
+use Hexacore\Core\Request\RequestInterface;
 
 class Auth implements AuthInterface
 {
@@ -39,8 +40,9 @@ class Auth implements AuthInterface
         return $token;
     }
 
-    public function authenticate(StorageInterface $storage) : void
+    public function authenticate(RequestInterface $request) : void
     {
+        $storage = $request->getSession();
         $token = $this->getToken($storage);
 
         if (null === $token) {

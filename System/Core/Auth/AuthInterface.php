@@ -3,6 +3,7 @@
 namespace Hexacore\Core\Auth;
 
 use Hexacore\Core\Storage\StorageInterface;
+use Hexacore\Core\Request\RequestInterface;
 
 interface AuthInterface
 {
@@ -29,5 +30,5 @@ interface AuthInterface
      * @param StorageInterface $storage
      * @return void
      */
-    public function authenticate(StorageInterface $storage) : void;
+    public function authenticate(RequestInterface $storage) : void;
 }

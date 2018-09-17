@@ -70,7 +70,7 @@ class Core
             $this->eventManager->notify(EventManager::CORE_AUTH_PRE_AUTHENTICATE, $auth);
 
             if ($auth instanceof AuthInterface) {
-                $auth->authenticate($request->getSession());
+                $auth->authenticate($request);
             } else {
                 throw new \Exception("Auth instance uncompatible", Response::INTERNAL_SERVER_ERROR);
             }
