@@ -6,6 +6,8 @@ use Hexacore\Core\Request\RequestInterface;
 use Hexacore\Core\DI\DIC;
 use Hexacore\Core\Auth\AuthInterface;
 use Hexacore\Core\Response\ResponseInterface;
+use Hexacore\Core\Storage\StorageInterface;
+use Hexacore\Core\Request\Request;
 
 abstract class Controller
 {
@@ -37,15 +39,12 @@ abstract class Controller
 
         if (is_string($view)) {
             $view = [$view];
-        }
-
-        if(is_array($data) && !is_array(reset($data))){
             $data = [$data];
-        }
+        }        
 
         $viewCls = $this->injector->get(View::class);
 
-        $viewCls->init($view,$data, $options["baseView"]);
+        $viewCls->init($view, $data, $options["baseView"]);
 
         return $viewCls->create();
     }
