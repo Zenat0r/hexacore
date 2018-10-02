@@ -61,6 +61,12 @@ interface RequestInterface
     public function getPost(string $name);
 
     /**
+     * Return request body
+     *
+     * @return void
+     */
+    public function getBody();
+    /**
      * Return a session object
      *
      * @return Session

@@ -20,6 +20,8 @@ class Request implements RequestInterface
 
     private $posts;
 
+    private $body;
+
     private $session;
 
     private $files;
@@ -45,6 +47,7 @@ class Request implements RequestInterface
         $this->header = $this->getHeaders();
         $this->queries = $_GET;
         $this->posts = $_POST;
+        $this->body = file_get_contents("php://input");
         $this->files = $_FILES;
     }
 
@@ -55,6 +58,8 @@ class Request implements RequestInterface
         foreach ($server as $key => $value) {
             if (preg_match("/^HTTP_.*$/", $key)) {
                 $headers[str_replace("HTTP_", "", $key)] = $value;
+            } else {
+                $headers[$key] = $value;
             }
         }
 
@@ -95,6 +100,11 @@ class Request implements RequestInterface
     public function getPost(string $name)
     {
         return $this->posts[$name];
+    }
+
+    public function getBody()
+    {
+        return $this->body;
     }
 
     public function getSession() : Session
