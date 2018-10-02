@@ -13,6 +13,8 @@ abstract class AbstractModel
     private $query;
     private $params;
 
+    private $lastId;
+
     protected $where;
 
     protected $fields;
@@ -40,6 +42,8 @@ abstract class AbstractModel
             $result = $connect->prepare($query);
             $result->execute($params);
         }
+
+        $this->lastId = $connect->lastInsertId();
 
         $this->params = null;
 
@@ -137,7 +141,7 @@ abstract class AbstractModel
         return $this->execute($this->query, $this->params)->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function getSingle(string $selector, $value): iterable
+    public function getSingle(string $selector, $value)
     {
         $this->fieldExist($selector);
 
@@ -220,5 +224,10 @@ abstract class AbstractModel
         if (!array_key_exists($name, $tableFields)) {
             throw new \Exception("Field $name doesn't exist");
         }
+    }
+
+    public function getLastId()
+    {
+        return $this->lastId;
     }
 }
