@@ -53,6 +53,9 @@ class Router implements RouterInterface
 
             if (method_exists($controller, $actionName)) {
                 $reflectedAction = new \ReflectionMethod($controller, $actionName);
+
+                if (!$reflectedAction->isPublic()) throw new \Exception("Method is not public", Response::NOT_FOUND);
+
                 $parameters = [];
 
                 foreach ($reflectedAction->getParameters() as $param) {
