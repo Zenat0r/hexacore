@@ -15,8 +15,11 @@ class View
     public function init(array $views, array $data, string $base): void
     {
         foreach ($views as $key => $view) {
-            if(is_int($key)) $this->blocks["block" . ucfirst(++$key)] = $view;
-            else $this->blocks[$key] = $view;
+            if (is_int($key)) {
+                $this->blocks["block" . ucfirst(++$key)] = $view;
+            } else {
+                $this->blocks[$key] = $view;
+            }
         }
         $this->data = $data;
         $this->base = $base;
@@ -25,7 +28,7 @@ class View
     public function baseUrl(string $resource): string
     {
         $request = Request::get();
-        if($request->getServer("SERVEUR_PORT") !== 80){
+        if ($request->getServer("SERVEUR_PORT") !== 80) {
             $port = $request->getServer("SERVEUR_PORT");
         }
 
@@ -37,7 +40,7 @@ class View
 
         $url .= "{$request->getServer("SERVER_NAME")}";
 
-        if(isset($port)){
+        if (isset($port)) {
             $url .= ":{$port}";
         }
 
