@@ -20,7 +20,7 @@ class Request implements RequestInterface
 
     private $posts;
 
-    private $body;
+    private $payload;
 
     private $session;
 
@@ -47,7 +47,7 @@ class Request implements RequestInterface
         $this->header = $this->getHeaders();
         $this->queries = $_GET;
         $this->posts = $_POST;
-        $this->body = file_get_contents("php://input");
+        $this->payload = file_get_contents("php://input");
         $this->files = $_FILES;
     }
 
@@ -102,9 +102,9 @@ class Request implements RequestInterface
         return $this->posts[$name];
     }
 
-    public function getBody()
+    public function getPayload()
     {
-        return $this->body;
+        return $this->payload;
     }
 
     public function getSession() : Session
