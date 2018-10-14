@@ -65,7 +65,7 @@ interface RequestInterface
      *
      * @return void
      */
-    public function getBody();
+    public function getPayload();
     /**
      * Return a session object
      *
