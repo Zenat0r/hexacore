@@ -38,7 +38,7 @@ class Core
 
         $subs = JsonConfig::get()["eventSubscriber"];
 
-        $dic = new DIC();
+        $dic = DIC::start();
         if (!empty($subs)) {
             foreach ($subs as $sub) {
                 $this->eventManager->addSubscriber($dic->get($sub));
@@ -51,8 +51,10 @@ class Core
     public function handle(RequestInterface $request) : ResponseInterface
     {
         try {
+            $dic = DIC::start();
+
             $firewallName = JsonConfig::get("app")["firewall"] ?? Core::defaultFirewall;
-            $firewall = new $firewallName();
+            $firewall = $dic->get($firewallName);
 
             $this->eventManager->notify(EventManager::CORE_FIREWALL_PRE_CHECK, $firewall);
 
@@ -65,7 +67,7 @@ class Core
             $this->eventManager->notify(EventManager::CORE_FIREWALL_POST_CHECK, $firewall);
 
             $authName = JsonConfig::get("app")["auth"]["class"] ?? Core::defaultAuth;
-            $auth = new $authName();
+            $auth = $dic->get($authName);
 
             $this->eventManager->notify(EventManager::CORE_AUTH_PRE_AUTHENTICATE, $auth);
 

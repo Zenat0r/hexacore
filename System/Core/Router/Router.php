@@ -18,7 +18,7 @@ class Router implements RouterInterface
 
     public function __construct(AuthInterface $auth)
     {
-        $this->dic = new DIC();
+        $this->dic = DIC::start();
         $this->auth = $auth;
     }
 
@@ -92,6 +92,8 @@ class Router implements RouterInterface
 
                 if ($actionReturn instanceof ResponseInterface) {
                     return $actionReturn;
+                } else {
+                    throw new Exception("Contoller's action does return a valid response", Response::INTERNAL_SERVER_ERROR);
                 }
             } else {
                 throw new \Exception("Action does not exist", Response::NOT_FOUND);

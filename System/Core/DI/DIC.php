@@ -6,7 +6,16 @@ use Hexacore\Core\Config\JsonConfig;
 
 class DIC
 {
-    private $instances;
+    private static $instance;
+
+    public static function start(): DIC
+    {
+        if (is_null(self::$instance)) {
+            self::$instance = new DIC();
+        }
+
+        return self::$instance;
+    }
 
     public function get(string $name)
     {
