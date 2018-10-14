@@ -8,9 +8,9 @@ interface EventSubscriberInterface
      * tell the dispatch whether it is subscribed to the event or not
      *
      * @param string $event
-     * @return boolean
+     * @return bool
      */
-    public function isNotify(string $event) : boolean;
+    public function isNotify(string $event) : bool;
 
     /**
      * function exectuted when the event is dispatch
