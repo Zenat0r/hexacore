@@ -2,7 +2,6 @@
 
 namespace Hexacore\Core\Auth;
 
-use Hexacore\Core\Storage\StorageInterface;
 use Hexacore\Core\Config\JsonConfig;
 use Hexacore\Core\Response\Response;
 use Hexacore\Core\Request\RequestInterface;
@@ -12,6 +11,7 @@ class Auth implements AuthInterface
     const defaultRole = "ANONYMOUS";
 
     private $roles;
+    private $storage;
 
     public function __construct()
     {
@@ -19,36 +19,36 @@ class Auth implements AuthInterface
         array_push($this->roles, Auth::defaultRole);
     }
 
-    public function isGranted(StorageInterface $storage, string $role) : bool
+    public function isGranted(string $role) : bool
     {
         $role = strtoupper($role);
         if (!in_array($role, $this->roles)) {
             throw new \Exception("Role doesn't exist", Response::UNAUTHORIZED);
         }
 
-        if ($storage->get("USER_ROLE") === $role) {
+        if ($this->storage->get("USER_ROLE") === $role) {
             return true;
         }
 
         return false;
     }
 
-    public function getToken(StorageInterface $storage) : ?string
+    public function getToken() : ?string
     {
-        $token = $storage->get("token") ?? null;
+        $token = $this->storage->get("token") ?? null;
 
         return $token;
     }
 
     public function authenticate(RequestInterface $request) : void
     {
-        $storage = $request->getSession();
+        $this->storage = $request->getSession();
         $token = $this->getToken($storage);
 
         if (null === $token) {
-            $token = $storage->add("token", md5(uniqid()));
-        }
+            $token = $this->storage->add("token", md5(uniqid()));
 
-        $storage->add("USER_ROLE", Auth::defaultRole);
+            $this->storage->add("USER_ROLE", Auth::defaultRole);
+        }
     }
 }

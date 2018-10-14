@@ -7,7 +7,6 @@ use Hexacore\Core\DI\DIC;
 use Hexacore\Core\Auth\AuthInterface;
 use Hexacore\Core\Response\ResponseInterface;
 use Hexacore\Core\Storage\StorageInterface;
-use Hexacore\Core\Request\Request;
 
 abstract class Controller
 {
@@ -24,9 +23,9 @@ abstract class Controller
         $this->auth = $auth;
     }
 
-    protected function isGranted(StorageInterface $storage, string $role): bool
+    protected function isGranted(string $role): bool
     {
-        return $this->auth->isGranted($storage, $role);
+        return $this->auth->isGranted($role);
     }
 
     protected function render($view, array $data = null, array $options = null): ResponseInterface

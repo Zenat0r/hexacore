@@ -6,6 +6,7 @@ use Hexacore\Core\Controller;
 use Hexacore\Core\Response\Response;
 use App\Model\UserModel;
 use Hexacore\Core\Auth\Auth;
+use Hexacore\Core\Response\Redirect\RedirectionResponse;
 
 class UserController extends Controller
 {
@@ -60,7 +61,7 @@ class UserController extends Controller
 
     public function update(UserModel $userModel, int $id, string $name)
     {
-        if ($this->isGranted($this->request->getSession(), Auth::defaultRole)) {
+        if ($this->isGranted(Auth::defaultRole)) {
             /*$userModel->set("name", $name)
                     ->where("id", $id)
                     ->update();*/
