@@ -5,12 +5,19 @@ namespace Hexacore\Core;
 use Hexacore\Core\Response\ResponseInterface;
 use Hexacore\Core\Response\Response;
 use Hexacore\Core\Request\Request;
+use Hexacore\Helpers\Url;
 
 class View
 {
     private $blocks;
     private $data;
     private $base;
+    private $url;
+
+    public function __construct(Url $url)
+    {
+        $this->url = $url;        
+    }
 
     public function init(array $views, array $data, string $base): void
     {
@@ -27,28 +34,42 @@ class View
 
     public function baseUrl(string $resource): string
     {
-        $request = Request::get();
-        if ($request->getServer("SERVEUR_PORT") !== 80) {
-            $port = $request->getServer("SERVEUR_PORT");
-        }
+        return $this->url->baseUrl($resource);
+    }
 
-        if (null == $request->getServer("HTTPS")) {
-            $url = "http://";
-        } else {
-            $url = "https://";
-        }
+    public function publicUrl(string $path): string
+    {
+        return $this->url->publicUrl($path);
+    }
 
-        $url .= "{$request->getServer("SERVER_NAME")}";
+    public function styleUrl(string $path): string
+    {
+        return $this->url->styleUrl($path);
+    }
 
-        if (isset($port)) {
-            $url .= ":{$port}";
-        }
+    public function scriptUrl(string $path): string
+    {
+        return $this->url->scriptUrl($path);
+    }
 
-        return $url .= "/{$resource}";
+    public function fontUrl(string $path): string
+    {
+        return $this->url->fontUrl($path);
+    }
+
+    public function imgUrl(string $path): string
+    {
+        return $this->url->publiimgUrlUrl($path);
+    }
+
+    public function videoUrl(string $path): string
+    {
+        return $this->url->videoUrl($path);
     }
 
     public function create(): ResponseInterface
     {
+        $view = $this;
         foreach ($this->blocks as $_keyBlock => $_block) {
             $data = array_shift($this->data);
             extract($data);
