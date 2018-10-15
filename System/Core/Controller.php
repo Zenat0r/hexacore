@@ -7,14 +7,21 @@ use Hexacore\Core\DI\DIC;
 use Hexacore\Core\Auth\AuthInterface;
 use Hexacore\Core\Response\ResponseInterface;
 use Hexacore\Core\Storage\StorageInterface;
+use Hexacore\Helpers\Url;
 
 abstract class Controller
 {
     protected $request;
+    protected $urlGenerator;
 
     protected $injector;
 
     private $auth;
+
+    public function __construct(Url $url)
+    {
+        $this->urlGenerator = $url;
+    }
 
     public function initialize(RequestInterface $request, DIC $dic, AuthInterface $auth)
     {
