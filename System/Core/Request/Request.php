@@ -2,15 +2,15 @@
 
 namespace Hexacore\Core\Request;
 
-use Hexacore\Core\Storage\Session\Session;
 use Hexacore\Core\Storage\Cookie\Cookie;
 use Hexacore\Core\Storage\Cookie\CookieInterface;
+use Hexacore\Core\Storage\Session\Session;
 
 class Request implements RequestInterface
 {
     private static $instance;
 
-    private $fulleRequest;
+    private $fullRequest;
 
     private $method;
 
@@ -42,7 +42,7 @@ class Request implements RequestInterface
     private function __construct()
     {
         $this->server = $_SERVER;
-        $this->fulleRequest = (isset($this->server['HTTPS']) && $this->server['HTTPS'] === 'on' ? "https" : "http") . "://$this->server[HTTP_HOST]$this->server[REQUEST_URI]";
+        $this->fullRequest = (isset($this->server['HTTPS']) && $this->server['HTTPS'] === 'on' ? "https" : "http") . "://{$this->server['HTTP_HOST']}{$this->server['REQUEST_URI']}";
         $this->method = $this->server["REQUEST_METHOD"];
         $this->header = $this->getHeaders();
         $this->queries = $_GET;
@@ -68,7 +68,7 @@ class Request implements RequestInterface
 
     public function getFullRequest() : string
     {
-        return $this->fulleRequest;
+        return $this->fullRequest;
     }
 
     public function getMethod() : string
@@ -128,11 +128,11 @@ class Request implements RequestInterface
 
     public function getCookie(): CookieInterface
     {
-        if (is_null($this->cookie)) {
-            $this->cookie = new Cookie();
+        if (is_null($this->cookies)) {
+            $this->cookies = new Cookie();
         }
 
-        return $this->cookie;
+        return $this->cookies;
     }
 
     public function getFiles() : ?iterable

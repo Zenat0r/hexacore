@@ -3,8 +3,8 @@
 namespace Hexacore\Core\Auth;
 
 use Hexacore\Core\Config\JsonConfig;
-use Hexacore\Core\Response\Response;
 use Hexacore\Core\Request\RequestInterface;
+use Hexacore\Core\Response\Response;
 
 class Auth implements AuthInterface
 {
@@ -43,7 +43,7 @@ class Auth implements AuthInterface
     public function authenticate(RequestInterface $request) : void
     {
         $this->storage = $request->getSession();
-        $token = $this->getToken($storage);
+        $token = $this->getToken();
 
         if (null === $token) {
             $token = $this->storage->add("token", md5(uniqid()));

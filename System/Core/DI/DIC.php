@@ -43,7 +43,7 @@ class DIC
                 if ($param->getClass()) {
                     $parameters[] = $this->get($param->getClass()->getName());
                 } else {
-                    $parameters[] = $parm->getDefaultValue();
+                    $parameters[] = $param->getDefaultValue();
                 }
             }
             return $reflectedClass->newInstanceArgs($parameters);

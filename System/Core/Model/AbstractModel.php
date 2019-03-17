@@ -141,7 +141,7 @@ abstract class AbstractModel
         return $this->execute($this->query, $this->params)->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function getSingle(string $selector, $value)
+    public function getSingle(String $selector, $value)
     {
         $this->fieldExist($selector);
 
