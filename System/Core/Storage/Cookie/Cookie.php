@@ -2,8 +2,8 @@
 
 namespace Hexacore\Core\Storage\Cookie;
 
-use Hexacore\Core\Storage\StorageInterface;
 use Hexacore\Core\Request\Request;
+use Hexacore\Core\Storage\StorageInterface;
 
 class Cookie implements CookieInterface, StorageInterface
 {
@@ -51,6 +51,7 @@ class Cookie implements CookieInterface, StorageInterface
     public function add(string $name, $value = null)
     {
         setcookie($name, $value, $this->timeout, $this->path, Request::get()->getServer("HTTP_HOST"), $this->secured, $this->httpOnly);
+        $_COOKIE[$name] = $value;
     }
 
     public function remove(string $name): bool
