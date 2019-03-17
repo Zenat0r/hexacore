@@ -2,9 +2,8 @@
 
 namespace Hexacore\Core;
 
-use Hexacore\Core\Response\ResponseInterface;
 use Hexacore\Core\Response\Response;
-use Hexacore\Core\Request\Request;
+use Hexacore\Core\Response\ResponseInterface;
 use Hexacore\Helpers\Url;
 
 class View
@@ -72,7 +71,7 @@ class View
         $view = $this;
         foreach ($this->blocks as $_keyBlock => $_block) {
             $data = array_shift($this->data);
-            extract($data);
+            if ($data != null) extract($data);
 
             ob_start();
 
