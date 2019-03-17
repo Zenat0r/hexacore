@@ -1,5 +1,7 @@
 # Hexacore
 
+[![BCH compliance](https://bettercodehub.com/edge/badge/Zenat0r/hexacore?branch=master)](https://bettercodehub.com/)
+
 Hexacore is a tiny PHP framework based on MVC pattern. Initially a personal project to improve my PHP with design patterns and the new features from php 7.0+
 
 I think this project can be useful for person wishing to learn PHP and have a better understanding of MVC pattern.
