@@ -2,8 +2,9 @@
 
 namespace Hexacore\Core\Firewall;
 
-use Hexacore\Core\Request\RequestInterface;
 use Hexacore\Core\Config\JsonConfig;
+use Hexacore\Core\Request\RequestInterface;
+use Hexacore\Core\Response\Response;
 
 class DefaultFirewall implements FirewallInterface
 {
@@ -19,6 +20,8 @@ class DefaultFirewall implements FirewallInterface
             return true;
         }
 
-        if ($throw) ;//exepection;
+        if ($throw) throw new \Exception("Connexion not allowed", Response::FORBIDDEN);//exepection;
+
+        return false;
     }
 }
