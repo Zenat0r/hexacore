@@ -4,11 +4,11 @@ namespace Hexacore\Core\Model;
 
 use Hexacore\Core\Model\Connection\Connection;
 
-abstract class AbstractModel
+class QueryBuilder
 {
     const ALLOWED_OPERATOR = ["LIKE", "=", "<>", "<", "=<", ">", ">=", "IN"];
     private $connection;
-    protected $table;
+    private $table;
 
     private $query;
     private $params;
@@ -54,7 +54,7 @@ abstract class AbstractModel
         return $result;
     }
 
-    public function where(string $selector, $value, string $operator = "="): AbstractModel
+    public function where(string $selector, $value, string $operator = "="): QueryBuilder
     {
         if (!in_array($operator, self::ALLOWED_OPERATOR)) {
             throw new \Exception("Operator not allowed");
@@ -73,7 +73,7 @@ abstract class AbstractModel
         return $this;
     }
 
-    public function orWhere(string $selector, $value, string $operator = "="): AbstractModel
+    public function orWhere(string $selector, $value, string $operator = "="): QueryBuilder
     {
         if (!in_array($operator, self::ALLOWED_OPERATOR)) {
             throw new \Exception("Operator not allowed");
@@ -92,7 +92,7 @@ abstract class AbstractModel
         return $this;
     }
 
-    public function set(string $name, $value): AbstractModel
+    public function set(string $name, $value): QueryBuilder
     {
         $this->fieldExist($name);
 
@@ -101,7 +101,7 @@ abstract class AbstractModel
         return $this;
     }
 
-    public function fields(array $fields): AbstractModel
+    public function fields(array $fields): QueryBuilder
     {
         foreach ($fields as $key => $value) {
             $this->fieldExist($key);
@@ -112,7 +112,7 @@ abstract class AbstractModel
         return $this;
     }
 
-    public function field(string $field): AbstractModel
+    public function field(string $field): QueryBuilder
     {
         return $this->fields([$field]);
     }
@@ -229,5 +229,12 @@ abstract class AbstractModel
     public function getLastId()
     {
         return $this->lastId;
+    }
+
+    public function model(string $name): QueryBuilder
+    {
+        $this->table = $name;
+
+        return $this;
     }
 }

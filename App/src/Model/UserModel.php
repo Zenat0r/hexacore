@@ -2,10 +2,10 @@
 
 namespace App\Model;
 
-use Hexacore\Core\Model\AbstractModel;
+use Hexacore\Core\Model\QueryBuilder;
 use Hexacore\Core\Model\StorageTrait;
 
-class UserModel extends AbstractModel
+class UserModel extends QueryBuilder
 {
     use StorageTrait;
     
