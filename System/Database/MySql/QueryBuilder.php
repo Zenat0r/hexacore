@@ -1,37 +1,62 @@
 <?php
 
-namespace Hexacore\Core\Model;
+namespace Hexacore\Database\MySql;
 
-use Hexacore\Core\Model\Connection\Connection;
+use Hexacore\Core\Model\AbstractQueryBuilder;
+use Hexacore\Core\Model\QueryBuilderInterface;
 
-abstract class AbstractModel
+/**
+ * Implementation of QueryBuilder for the SQL database like.
+ *
+ * Class QueryBuilder
+ * @package Hexacore\Database\MySql
+ */
+class QueryBuilder extends AbstractQueryBuilder
 {
-    const ALLOWED_OPERATOR = ["LIKE", "=", "<>", "<", "=<", ">", ">=", "IN"];
-    private $connection;
-    protected $table;
-
+    /**
+     * @var string
+     */
     private $query;
+    /**
+     * @var array
+     */
     private $params;
 
+    /**
+     * @var array
+     */
+    private $where;
+
+    /**
+     * @var array
+     */
+    private $filter;
+
+    /**
+     * @var array
+     */
+    private $sets;
+
+    /**
+     * @var int
+     */
     private $lastId;
 
-    protected $where;
-
-    protected $fields;
-
-    protected $sets;
-
+    /**
+     * QueryBuilder constructor.
+     * @param Connection $connection
+     */
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
     }
 
-    public function getQuery(): string
-    {
-        return $this->query;
-    }
-
-    protected function execute(string $query, ?array $params = null)
+    /**
+     * @param string $query
+     * @param array|null $params
+     * @return bool|false|\PDOStatement
+     */
+    private function execute(string $query, ?array $params = null)
     {
         $connect = $this->connection->establish();
         $connect->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
@@ -48,19 +73,21 @@ abstract class AbstractModel
         $this->params = null;
 
         $this->where = null;
-        $this->fields = null;
+        $this->filter = null;
         $this->sets = null;
 
         return $result;
     }
 
-    public function where(string $selector, $value, string $operator = "="): AbstractModel
+    /**
+     * @inheritdoc
+     * @throws \Exception
+     */
+    public function where(string $selector, $value, string $operator = "="): QueryBuilderInterface
     {
         if (!in_array($operator, self::ALLOWED_OPERATOR)) {
             throw new \Exception("Operator not allowed");
         }
-
-        $this->fieldExist($selector);
 
         if (null == $this->where) {
             $this->where = " WHERE {$selector} {$operator} :where_{$selector}";
@@ -73,13 +100,15 @@ abstract class AbstractModel
         return $this;
     }
 
-    public function orWhere(string $selector, $value, string $operator = "="): AbstractModel
+    /**
+     * @inheritdoc
+     * @throws \Exception
+     */
+    public function orWhere(string $selector, $value, string $operator = "="): QueryBuilderInterface
     {
         if (!in_array($operator, self::ALLOWED_OPERATOR)) {
             throw new \Exception("Operator not allowed");
         }
-
-        $this->fieldExist($selector);
 
         if (null == $this->where) {
             $this->where = " WHERE {$selector} {$operator} :orWhere_{$selector}";
@@ -92,43 +121,60 @@ abstract class AbstractModel
         return $this;
     }
 
-    public function set(string $name, $value): AbstractModel
+    /**
+     * @inheritdoc
+     */
+    public function set(string $name, $value): QueryBuilderInterface
     {
-        $this->fieldExist($name);
-
         $this->sets[$name] = $value;
 
         return $this;
     }
 
-    public function fields(array $fields): AbstractModel
+    /**
+     * @inheritdoc
+     */
+    public function filter(iterable $filter): QueryBuilderInterface
     {
-        foreach ($fields as $key => $value) {
-            $this->fieldExist($key);
-        }
-
-        $this->fields = $fields;
+        $this->filter = $filter;
 
         return $this;
     }
 
-    public function field(string $field): AbstractModel
+    /**
+     * @inheritdoc
+     */
+    public function addFilter($filter): QueryBuilderInterface
     {
-        return $this->fields([$field]);
+        if (is_null($this->filter)) {
+            return $this->filter([$filter]);
+        } else {
+            $this->filter = [];
+            array_push($this->filter, $filter);
+        }
+
+        return $this;
     }
 
+    /**
+     * @inheritdoc
+     * @throws \Exception
+     */
     public function get(int $limit = null, int $offset = 0): iterable
     {
-        if (null == $this->fields) {
-            $this->fields = ["*"];
+        if (null == $this->model) {
+            throw new \Exception("No model set");
+        }
+        if (null == $this->filter) {
+            $this->filter = ["*"];
         }
 
         $this->query = "SELECT";
-        foreach ($this->fields as $field) {
+        foreach ($this->filter as $field) {
             $this->query .= " {$field},";
         }
         $this->query = substr($this->query, 0, -1);
-        $this->query .= " FROM {$this->table}";
+        $this->query .= " FROM {$this->model}";
 
         if (!empty($this->where)) {
             $this->query .= $this->where;
@@ -141,21 +187,16 @@ abstract class AbstractModel
         return $this->execute($this->query, $this->params)->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function getSingle(String $selector, $value)
-    {
-        $this->fieldExist($selector);
-
-        $this->query = "SELECT * FROM {$this->table}";
-
-        $this->query .= " WHERE {$selector}=:get_single_{$selector}";
-        $this->params[":get_single_{$selector}"] = $value;
-
-        return reset($this->execute($this->query, $this->params)->fetchAll(\PDO::FETCH_ASSOC));
-    }
-
+    /**
+     * @inheritdoc
+     * @throws \Exception
+     */
     public function delete()
     {
-        $this->query = "DELETE FROM {$this->table}";
+        if (null == $this->model) {
+            throw new \Exception("No model set");
+        }
+        $this->query = "DELETE FROM {$this->model}";
 
         if (!empty($this->where)) {
             $this->query .= $this->where;
@@ -166,13 +207,20 @@ abstract class AbstractModel
         }
     }
 
+    /**
+     * @inheritdoc
+     * @throws \Exception
+     */
     public function insert()
     {
+        if (null == $this->model) {
+            throw new \Exception("No model set");
+        }
         if (null == $this->sets) {
             throw new \Exception("no values to insert");
         }
 
-        $this->query = "INSERT INTO {$this->table}(";
+        $this->query = "INSERT INTO {$this->model}(";
 
         foreach ($this->sets as $field => $value) {
             $this->query .= "{$field}, ";
@@ -191,17 +239,24 @@ abstract class AbstractModel
         return $this->execute($this->query, $this->params);
     }
 
-    public function update(bool $withWhere = true)
+    /**
+     * @inheritdoc
+     * @throws \Exception
+     */
+    public function update()
     {
+        if (null == $this->model) {
+            throw new \Exception("No model set");
+        }
         if (null == $this->sets) {
             throw new \Exception("no values to update");
         }
 
-        if (null == $this->where && $withWhere) {
+        if (null == $this->where) {
             throw new \Exception("Warning: no where statement (add arg false to run anyway)");
         }
 
-        $this->query = "UPDATE {$this->table} SET";
+        $this->query = "UPDATE {$this->model} SET";
 
         foreach ($this->sets as $field => $value) {
             $this->query .= " {$field}=:update_{$field}, ";
@@ -215,17 +270,19 @@ abstract class AbstractModel
         return $this->execute($this->query, $this->params);
     }
 
-    private function fieldExist(string $name)
+    /**
+     * @inheritdoc
+     */
+    public function model(string $name): QueryBuilderInterface
     {
-        $classParams = get_object_vars($this);
+        $this->model = array_pop(explode("\\", $name));
 
-        $tableFields = array_diff_key($classParams, ["connection" => '', "table" => '', "query" => '', "params" => '', "fileds" => '', "where" => '', "sets" => '']);
-
-        if (!array_key_exists($name, $tableFields)) {
-            throw new \Exception("Field $name doesn't exist");
-        }
+        return $this;
     }
 
+    /**
+     * @return mixed
+     */
     public function getLastId()
     {
         return $this->lastId;

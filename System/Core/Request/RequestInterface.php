@@ -2,9 +2,13 @@
 
 namespace Hexacore\Core\Request;
 
-use Hexacore\Core\Storage\Session\Session;
 use Hexacore\Core\Storage\Cookie\CookieInterface;
+use Hexacore\Core\Storage\Session\Session;
 
+/**
+ * Interface RequestInterface
+ * @package Hexacore\Core\Request
+ */
 interface RequestInterface
 {
     /**
