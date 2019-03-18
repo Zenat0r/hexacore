@@ -94,8 +94,6 @@ class QueryBuilder
 
     public function set(string $name, $value): QueryBuilder
     {
-        $this->fieldExist($name);
-
         $this->sets[$name] = $value;
 
         return $this;
@@ -221,9 +219,9 @@ class QueryBuilder
 
         $tableFields = array_diff_key($classParams, ["connection" => '', "table" => '', "query" => '', "params" => '', "fileds" => '', "where" => '', "sets" => '']);
 
-        if (!array_key_exists($name, $tableFields)) {
+        /*if (!array_key_exists($name, $tableFields)) {
             throw new \Exception("Field $name doesn't exist");
-        }
+        }*/
     }
 
     public function getLastId()

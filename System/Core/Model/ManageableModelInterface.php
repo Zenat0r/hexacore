@@ -11,5 +11,7 @@ namespace Hexacore\Core\Model;
 
 interface ManageableModelInterface
 {
-    public function getId(): int;
+    public function getId(): ?int;
+
+    public function setId(int $id): ManageableModelInterface;
 }

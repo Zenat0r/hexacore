@@ -6,10 +6,9 @@
  * Time: 21:02
  */
 
-namespace Hexacore\Core\Model\ModelManager;
+namespace Hexacore\Core\Model\Manager;
 
 use Hexacore\Core\Model\ManageableModelInterface;
-use Hexacore\Core\Model\Manager\ModelManagerInterface;
 use Hexacore\Core\Model\QueryBuilder;
 
 /**
@@ -36,30 +35,56 @@ class ModelManager implements ModelManagerInterface
      * @param ManageableModelInterface $model
      * @return QueryBuilder
      * @throws \ReflectionException
+     * @throws \Exception
      */
     private function populateQueryBuilder(ManageableModelInterface $model): QueryBuilder
     {
         $namespace = get_class($model);
         $reflection = new \ReflectionClass($namespace);
 
-        $reflexionMethods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
+        $reflexionProperties = $reflection->getProperties(\ReflectionProperty::IS_PRIVATE);
 
         $className = array_pop(explode("\\", $namespace));
 
         $qb = $this->qb->model($className);
 
-        foreach ($reflexionMethods as $method) {
-            $methodName = $method->getName();
+        foreach ($reflexionProperties as $property) {
+            $propertyName = $property->getName();
+            $getterName = "get" . ucfirst($propertyName);
 
-            if (preg_match("/^get/", $methodName)) {
-                if (!is_null($value = $model->$methodName())) {
+            if (method_exists($model, $getterName)) {
+                if (!is_null($value = $model->$getterName())) {
                     // TODO match class variable name to database filed name
-                    $qb->set(preg_split("/get/", $methodName)[1], $value);
+                    $qb->set($propertyName, $value);
                 }
+            } else {
+                throw new \Exception("Getter for $propertyName doesn't exist");
             }
         }
 
         return $qb;
+    }
+
+    /**
+     * @param ManageableModelInterface $model
+     * @return string
+     * @throws \ReflectionException
+     * @throws \Exception
+     */
+    private function getIdentificator(ManageableModelInterface $model): string
+    {
+        $namespace = get_class($model);
+        $reflection = new \ReflectionClass($namespace);
+
+        $reflexionProperties = $reflection->getProperties(\ReflectionProperty::IS_PRIVATE);
+
+        foreach ($reflexionProperties as $property) {
+            if (preg_match("/id$/", $property->getName())) {
+                return $property->getName();
+            }
+        }
+
+        throw new \Exception("Missing ManagableModel identificator");
     }
 
     /**
@@ -70,7 +95,7 @@ class ModelManager implements ModelManagerInterface
     private function update(ManageableModelInterface $model)
     {
         $this->populateQueryBuilder($model)
-            ->where("Id", $model->getId())
+            ->where($this->getIdentificator($model), $model->getId())
             ->update();
     }
 
@@ -94,7 +119,7 @@ class ModelManager implements ModelManagerInterface
 
         $this->qb
             ->model($className)
-            ->where("Id", $model->getId())
+            ->where($this->getIdentificator($model), $model->getId())
             ->delete();
     }
 
