@@ -2,30 +2,19 @@
 
 namespace Hexacore\Core;
 
-use Hexacore\Core\Request\RequestInterface;
-use Hexacore\Core\DI\DIC;
 use Hexacore\Core\Auth\AuthInterface;
+use Hexacore\Core\DI\DIC;
 use Hexacore\Core\Response\ResponseInterface;
-use Hexacore\Core\Storage\StorageInterface;
-use Hexacore\Helpers\Url;
+
 
 abstract class Controller
 {
-    protected $request;
-    protected $urlGenerator;
+    private $auth;
 
     protected $injector;
 
-    private $auth;
-
-    public function __construct(Url $url)
+    public function initialize(DIC $dic, AuthInterface $auth)
     {
-        $this->urlGenerator = $url;
-    }
-
-    public function initialize(RequestInterface $request, DIC $dic, AuthInterface $auth)
-    {
-        $this->request = $request;
         $this->injector = $dic;
         $this->auth = $auth;
     }

@@ -2,13 +2,14 @@
 
 namespace Hexacore\Core\Router;
 
-use Hexacore\Core\Request\RequestInterface;
-use Hexacore\Core\Config\JsonConfig;
-use Hexacore\Core\DI\DIC;
-use Hexacore\Core\Controller;
 use Hexacore\Core\Auth\AuthInterface;
-use Hexacore\Core\Response\ResponseInterface;
+use Hexacore\Core\Config\JsonConfig;
+use Hexacore\Core\Controller;
+use Hexacore\Core\DI\DIC;
+use Hexacore\Core\Request\Request;
+use Hexacore\Core\Request\RequestInterface;
 use Hexacore\Core\Response\Response;
+use Hexacore\Core\Response\ResponseInterface;
 
 class Router implements RouterInterface
 {
@@ -22,6 +23,12 @@ class Router implements RouterInterface
         $this->auth = $auth;
     }
 
+    /**
+     * @param RequestInterface $request
+     * @return ResponseInterface
+     * @throws \ReflectionException
+     * @throws \Exception
+     */
     public function match(RequestInterface $request): ResponseInterface
     {
         $url = $request->getQuery("_url");
@@ -49,7 +56,7 @@ class Router implements RouterInterface
                 throw new \Exception("Controller not a child of Controller class", Response::INTERNAL_SERVER_ERROR);
             }
 
-            $controller->initialize($request, $this->dic, $this->auth);
+            $controller->initialize($this->dic, $this->auth);
 
             if (method_exists($controller, $actionName)) {
                 $reflectedAction = new \ReflectionMethod($controller, $actionName);
@@ -61,9 +68,15 @@ class Router implements RouterInterface
                 foreach ($reflectedAction->getParameters() as $param) {
                     if ($param->getClass()) {
                         $className = $param->getClass()->getName();
-                        $parameters[] = $this->dic->get($className);
+
+                        if (Request::class === $className) {
+                            $parameters[] = $request;
+                        } else {
+                            $parameters[] = $this->dic->get($className);
+                        }
                     } else {
                         $parameter = array_shift($items);
+
                         if ($parameter === null && $param->isDefaultValueAvailable()) {
                             $parameters[] = $param->getDefaultValue();
                         } elseif ($parameter === null) {
