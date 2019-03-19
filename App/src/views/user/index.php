@@ -1,16 +1,15 @@
 <table>
     <thead>
-    <?php foreach(reset($users) as $key => $values): ?>
-        <th><?php echo $key?></th>
-    <?php endforeach; ?>
+    <th>id</th>
+    <th>name</th>
     <th>action</th>
     </thead>
     <tbody>
-    <?php foreach($users as $key => $values): ?>
+    <?php foreach ($users as $user): ?>
     <tr>
-        <td><?php echo $values['id']?></td>
-        <td><?php echo $values['name']?></td>
-        <td><a href="<?php echo $this->baseUrl("user/show/{$values['id']}")?>">show</a></td>
+        <td><?php echo $user->getId(); ?></td>
+        <td><?php echo $user->getName(); ?></td>
+        <td><a href="<?php echo $view->baseUrl("user/show/{$user->getId()}") ?>">show</a></td>
     </tr>
     <?php endforeach; ?>
     </tbody>

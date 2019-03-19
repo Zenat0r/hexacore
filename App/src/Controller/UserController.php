@@ -2,64 +2,82 @@
 
 namespace App\Controller;
 
-use Hexacore\Core\Controller;
-use Hexacore\Core\Response\Response;
-use App\Model\UserModel;
+use App\Model\User;
 use Hexacore\Core\Auth\Auth;
+use Hexacore\Core\Controller;
+use Hexacore\Core\Model\Manager\ModelManager;
+use Hexacore\Core\Model\Repository\ModelRepository;
 use Hexacore\Core\Response\Redirect\RedirectionResponse;
+use Hexacore\Core\Response\Response;
+use Hexacore\Core\Response\ResponseInterface;
+use Hexacore\Helpers\Url;
 
 class UserController extends Controller
 {
-    public function index(UserModel $userModel): Response
+    /**
+     * @param ModelRepository $repository
+     * @return ResponseInterface
+     * @throws \Exception
+     */
+    public function index(ModelRepository $repository): ResponseInterface
     {
-        $allUsers = $userModel->get();
+        $users = $repository->setModel(User::class)->findAll();
 
         return $this->render("user/index.php", [
-            "users" => $allUsers
+            "users" => $users
         ]);
     }
 
-    public function show(UserModel $userModel, int $id = 0): Response
+    public function show(ModelRepository $modelRepository, int $id = 0): ResponseInterface
     {
-        $result = $userModel->getSingle("id", $id);
+        $user = $modelRepository->setModel(User::class)->findById($id);
 
-        if ($result == null) {
+        if ($user == null) {
             return new Response("not found");
         }
 
         return $this->render("user/show.php", [
-            "user" => $result
+            "user" => $user
         ]);
     }
 
-    public function del(UserModel $userModel, int $id = 0): Response
+    /**
+     * @param ModelManager $modelManager
+     * @param ModelRepository $modelRepository
+     * @param int $id
+     * @param Url $url
+     * @return Response
+     * @throws \Exception
+     */
+    public function del(ModelManager $modelManager, ModelRepository $modelRepository, int $id = 0, Url $url): Response
     {
-        if ($this->isGranted($this->request->getSession(), Auth::defaultRole)) {
-            $userModel->where("id", $id)->delete();
+        if ($this->isGranted(Auth::defaultRole)) {
+            $user = $modelRepository->setModel(User::class)->findById($id);
+            $modelManager->delete($user);
 
-            return new Response("", [
-                "location" => "http://localhost/user"
-            ]);
+            return new RedirectionResponse($url->baseUrl("user"));
         } else {
             return new Response("Not allowed");
         }
     }
 
-    public function create(UserModel $userModel, string $name): Response
+    /**
+     * @param ModelManager $modelManager
+     * @param string $name
+     * @return Response
+     * @throws \ReflectionException
+     */
+    public function create(ModelManager $modelManager, string $name, Url $url): Response
     {
-        if ($this->isGranted($this->request->getSession(), Auth::defaultRole)) {
-            $userModel->set("name", $name)
-                    ->insert();
+        $user = new User();
+        $user->setName($name);
 
-            return new Response("", [
-                "location" => "http://localhost/user"
-            ]);
-        } else {
-            return new Response("Not allowed");
-        }
+        $modelManager->persist($user);
+
+        return new RedirectionResponse($url->baseUrl("user"));
     }
 
-    public function update(UserModel $userModel, int $id, string $name)
+    public function update(User $userModel, int $id, string $name)
     {
         if ($this->isGranted(Auth::defaultRole)) {
             /*$userModel->set("name", $name)

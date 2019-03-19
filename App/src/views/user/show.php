@@ -1,2 +1,5 @@
-<h1><?php echo $user["name"]?><small>(<?= $user["id"] ?>)</small></h1>
+<h1><?php echo $user->getName() ?>
+    <small>(<?= $user->getId() ?>)</small>
+</h1>
 <a href="<?php echo $this->baseUrl("user") ?>">retour</a>
+<a href="<?php echo $this->baseUrl("user/del/{$user->getID()}") ?>">delete</a>
