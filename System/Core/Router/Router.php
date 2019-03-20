@@ -6,6 +6,8 @@ use Hexacore\Core\Auth\AuthInterface;
 use Hexacore\Core\Config\JsonConfig;
 use Hexacore\Core\Controller;
 use Hexacore\Core\DI\DIC;
+use Hexacore\Core\Model\ManageableModelInterface;
+use Hexacore\Core\Model\Repository\ModelRepository;
 use Hexacore\Core\Request\Request;
 use Hexacore\Core\Request\RequestInterface;
 use Hexacore\Core\Response\Response;
@@ -64,15 +66,26 @@ class Router implements RouterInterface
                 if (!$reflectedAction->isPublic()) throw new \Exception("Method is not public", Response::NOT_FOUND);
 
                 $parameters = [];
+                $reflectedParameters = $reflectedAction->getParameters();
 
-                foreach ($reflectedAction->getParameters() as $param) {
+                foreach ($reflectedParameters as $key => $param) {
                     if ($param->getClass()) {
                         $className = $param->getClass()->getName();
 
                         if (Request::class === $className) {
                             $parameters[] = $request;
                         } else {
-                            $parameters[] = $this->dic->get($className);
+                            $class = $this->dic->get($className);
+
+                            if ($class instanceof ManageableModelInterface && "int" === $reflectedParameters[$key + 1]->getType()->getName()) {
+                                $repository = $this->dic->get(ModelRepository::class);
+
+                                $id = $items[0];
+
+                                $parameters[] = $repository->setModel($className)->findById($id);
+                            } else {
+                                $parameters[] = $class;
+                            }
                         }
                     } else {
                         $parameter = array_shift($items);
@@ -106,7 +119,7 @@ class Router implements RouterInterface
                 if ($actionReturn instanceof ResponseInterface) {
                     return $actionReturn;
                 } else {
-                    throw new Exception("Contoller's action does return a valid response", Response::INTERNAL_SERVER_ERROR);
+                    throw new \Exception("Contoller's action does return a valid response", Response::INTERNAL_SERVER_ERROR);
                 }
             } else {
                 throw new \Exception("Action does not exist", Response::NOT_FOUND);
