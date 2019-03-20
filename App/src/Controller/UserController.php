@@ -28,7 +28,12 @@ class UserController extends Controller
         ]);
     }
 
-    public function show(User $user, int $id): ResponseInterface
+    /**
+     * @param User $user
+     * @return ResponseInterface
+     *
+     */
+    public function show(User $user): ResponseInterface
     {
         if ($user == null) {
             return new Response("not found");
@@ -43,11 +48,10 @@ class UserController extends Controller
      * @param ModelManager $modelManager
      * @param Url $url
      * @param User $user
-     * @param int $id
      * @return Response
      * @throws \ReflectionException
      */
-    public function del(ModelManager $modelManager, Url $url, User $user, int $id): Response
+    public function del(ModelManager $modelManager, Url $url, User $user): Response
     {
         if ($this->isGranted(Auth::defaultRole)) {
             $modelManager->delete($user);
@@ -77,22 +81,20 @@ class UserController extends Controller
 
     /**
      * @param ModelManager $modelManager
+     * @param Url $url
      * @param User $user
-     * @param int $id
      * @param string $name
      * @return Response
      * @throws \ReflectionException
      */
-    public function update(ModelManager $modelManager, User $user, int $id, string $name)
+    public function update(ModelManager $modelManager, Url $url, User $user, string $name)
     {
         if ($this->isGranted(Auth::defaultRole)) {
             $user->setName($name);
 
             $modelManager->persist($user);
 
-            return new Response("", [
-                "location" => "http://localhost/user"
-            ]);
+            return new RedirectionResponse($url->baseUrl("user"));
         } else {
             return new Response("Not allowed");
         }
