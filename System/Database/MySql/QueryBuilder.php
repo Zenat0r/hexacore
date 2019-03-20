@@ -149,7 +149,6 @@ class QueryBuilder extends AbstractQueryBuilder
         if (is_null($this->filter)) {
             return $this->filter([$filter]);
         } else {
-            $this->filter = [];
             array_push($this->filter, $filter);
         }
 
