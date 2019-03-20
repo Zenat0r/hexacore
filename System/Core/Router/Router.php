@@ -77,10 +77,10 @@ class Router implements RouterInterface
                         } else {
                             $class = $this->dic->get($className);
 
-                            if ($class instanceof ManageableModelInterface && "int" === $reflectedParameters[$key + 1]->getType()->getName()) {
+                            if ($class instanceof ManageableModelInterface) {
                                 $repository = $this->dic->get(ModelRepository::class);
 
-                                $id = $items[0];
+                                $id = array_shift($items);
 
                                 $parameters[] = $repository->setModel($className)->findById($id);
                             } else {
