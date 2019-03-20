@@ -146,7 +146,7 @@ For example:
 ``` 
 
 ### Model
-You can use Hexacore to persist data with a mysql database.
+You can use Hexacore to persist data. By default it uses mysql database.
 
 You can configure the database name and access in the configuration file
 `App/config/database.json`
@@ -160,6 +160,7 @@ You can configure the database name and access in the configuration file
 }
 ```
 
+#### Get data
 Data from the database can be retrieved in the controller :
 
 ```php
@@ -167,50 +168,157 @@ Data from the database can be retrieved in the controller :
 namespace App\Controller;
 
 use Hexacore\Core\Controller;
-use App\Model\UserModel;
+use Hexacore\Core\Model\Repository\ModelRepository;
 use Hexacore\Core\Response\ResponseInterface;
+use App\Model\User;
 
 class UserController extends Controller
 {
-    public function index(UserModel $userModel): ResponseInterface
+    public function index(ModelRepository $modelRepository): ResponseInterface
     {
-        $allUsers = $userModel->get();
+        // to get all users
+        $allUsers = $modelRepository->setModel(User::class)->findAll();
 
+        // to get the user with the id 1
+        $user = $modelRepository->findById(1);
+        
         return $this->render("user/index.php", [
-            "users" => $allUsers
+            "users" => $allUsers,
+            "user" => $user
         ]);
     }
 }
 ```
 
-To be able t1o get all users data you first need to create a model :
+The `ModelRepository` class will return a Model object, in this example a User Model.
+
+To be able to get all users data you first need to create a model. The model must describe the data you want to
+store using private properties. The model is a class that implement `ManageableModelInterface`. This allow Hexacore to interact with
+he data base through this model and easily handle it with pre-created object such as `ModelManager`. 
+
+Example :
 
 ```php
 <?php 
 
 namespace App\Model;
 
-use Hexacore\Core\Model\AbstractModel;
+use Hexacore\Core\Model\ManageableModelInterface;
 
-class UserModel extends AbstractModel
-{    
-    protected $table = "user";
+class User implements ManageableModelInterface
+{
     
-    protected $id;
-    protected $name;
+    private $id;
+    private $name;
+    
+   public function getId() : ?int
+   {
+        return $this->id;
+   }
+   
+   public function setId(int $id) : ManageableModelInterface
+   {
+        $this->id = $id;
+        
+        return $this;
+   }
 } 
 ``` 
 
-You need to create a corresponding table in your mysql database with the same fields (here id and name).
+You need to create a corresponding table in your mysql database with the same fields (here `id` and `name`) and table name `User`.
+
+#### Create
+We saw earlier that `ModelRepository` could be used to retrieve data from the database. Now to create
+and update a Model, we can use ModelManager.
+
+```php
+<?php 
+
+namespace App\Controller;
+
+use Hexacore\Core\Controller;
+use Hexacore\Core\Model\Manager\ModelManager;
+use Hexacore\Core\Response\ResponseInterface;
+use Hexacore\Core\Response\Redirect\RedirectionResponse;
+use Hexacore\Helpers\Url;
+use App\Model\User;
+
+class UserController extends Controller
+{
+    public function create(ModelManager $modelManager, string $name, Url $url): ResponseInterface
+    {
+        // create a new user with a personal name
+        $user = new User();
+        $user->setName($name);
+
+        // actually insert the new user in the database
+        $modelManager->persist($user);
+
+        // redirection to another page
+        return new RedirectionResponse($url->baseUrl("user"));
+    }
+}
+```
+
+#### Update and Delete
+With `ModelManager` you can also delete or update a model.
+
+```php
+<?php 
+
+namespace App\Controller;
+
+use Hexacore\Core\Controller;
+use Hexacore\Core\Model\Manager\ModelManager;
+use Hexacore\Core\Response\ResponseInterface;
+use App\Model\User;
+
+class UserController extends Controller
+{
+    /**
+     * For a resource like : user/update/{id}/{name}
+     * Example of the query :
+     * http://www.yourwebsite.com/user/update/1/zeus
+     */
+    public function update(ModelManager $modelManager, User $user, string $name): ResponseInterface
+    {
+        // the $user value will be a User object with data from the user number id
+        
+        
+        // we change the user name
+        $user->setName($name);
+        
+        // we persist this change in the database
+        $modelManager->persist($user);
+
+        return new Response("User updated");
+    }
+    
+    /**
+         * For a resource like : user/delete/{id}
+         * Example of the query :
+         * http://www.yourwebsite.com/user/delete/1
+         */
+    public function delete(ModelManager $modelManager, User $user): ResponseInterface 
+    {
+        // again $user will be a User Model corresponding to the user with
+        // the id, 1 in the example. 
+        
+        // delete a specific user in the database
+        $modelManager->delete($user);
+        
+        return new Response("User deleted");
+    }
+}
+```
 
 ## Evolution
 
 This project is developed for fun and may not be updated, but I see a lot of rooms for improvement :
-- Refactor the model part : indeed the way the models are used now is not interesting
-    - the developer should handle objects directly
-    - the framework is limited to 1 database technology
 - Add more unit tests to the framework
 - Be able to add another templating system
+- Login handler
+- Associate Models together
 
 For the future more test on several environments are required for example on nginx web server.
 
