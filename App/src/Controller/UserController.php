@@ -28,10 +28,8 @@ class UserController extends Controller
         ]);
     }
 
-    public function show(ModelRepository $modelRepository, int $id = 0): ResponseInterface
+    public function show(User $user, int $id): ResponseInterface
     {
-        $user = $modelRepository->setModel(User::class)->findById($id);
-
         if ($user == null) {
             return new Response("not found");
         }
@@ -43,16 +41,15 @@ class UserController extends Controller
 
     /**
      * @param ModelManager $modelManager
-     * @param ModelRepository $modelRepository
-     * @param int $id
      * @param Url $url
+     * @param User $user
+     * @param int $id
      * @return Response
-     * @throws \Exception
+     * @throws \ReflectionException
      */
-    public function del(ModelManager $modelManager, ModelRepository $modelRepository, int $id = 0, Url $url): Response
+    public function del(ModelManager $modelManager, Url $url, User $user, int $id): Response
     {
         if ($this->isGranted(Auth::defaultRole)) {
-            $user = $modelRepository->setModel(User::class)->findById($id);
             $modelManager->delete($user);
 
             return new RedirectionResponse($url->baseUrl("user"));
@@ -64,6 +61,7 @@ class UserController extends Controller
     /**
      * @param ModelManager $modelManager
      * @param string $name
+     * @param Url $url
      * @return Response
      * @throws \ReflectionException
      */
@@ -77,15 +75,20 @@ class UserController extends Controller
         return new RedirectionResponse($url->baseUrl("user"));
     }
 
-    public function update(User $userModel, int $id, string $name)
+    /**
+     * @param ModelManager $modelManager
+     * @param User $user
+     * @param int $id
+     * @param string $name
+     * @return Response
+     * @throws \ReflectionException
+     */
+    public function update(ModelManager $modelManager, User $user, int $id, string $name)
     {
         if ($this->isGranted(Auth::defaultRole)) {
-            /*$userModel->set("name", $name)
-                    ->where("id", $id)
-                    ->update();*/
+            $user->setName($name);
 
-            $user = $userModel->getObject($id);
-            $user->add("name", $name);
+            $modelManager->persist($user);
 
             return new Response("", [
                 "location" => "http://localhost/user"
