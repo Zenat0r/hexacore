@@ -17,7 +17,7 @@ class DefaultFirewallTest extends TestCase
 
     public function testCheck()
     {
-        $_SERVER["HTTPS"] == "off";
+        $_SERVER["HTTPS"] = "off";
 
         $request = Request::get();
         $firewall = new DefaultFirewall();
