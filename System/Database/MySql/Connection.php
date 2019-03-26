@@ -13,11 +13,16 @@ use Hexacore\Core\Model\Connection\AbstractConnection;
  */
 class Connection extends AbstractConnection
 {
+    private $pdo;
     /**
      * @inheritdoc
      */
     public function establish()
     {
-        return new \PDO("mysql:host={$this->host}:{$this->port};dbname={$this->db}", $this->user, $this->pwd);
+        if (is_null($this->pdo)) {
+            $this->pdo = new \PDO("mysql:host={$this->host}:{$this->port};dbname={$this->db}", $this->user, $this->pwd);
+        }
+
+        return $this->pdo;
     }
 }
