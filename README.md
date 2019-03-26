@@ -1,11 +1,18 @@
 # Hexacore
 
-[![BCH compliance](https://bettercodehub.com/edge/badge/Zenat0r/hexacore?branch=master)](https://bettercodehub.com/)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Zenat0r_hexacore&metric=ncloc)](https://sonarcloud.io/dashboard?id=Zenat0r_hexacore)
 
 Hexacore is a tiny PHP framework based on MVC pattern. Initially a personal project to improve my PHP with design patterns and the new features from php 7.0+
 
 I think this project can be useful for person wishing to learn PHP and have a better understanding of MVC pattern.
 
+[![BCH compliance](https://bettercodehub.com/edge/badge/Zenat0r/hexacore?branch=master)](https://bettercodehub.com/)
+
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/dashboard?id=Zenat0r_hexacore)
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Zenat0r_hexacore&metric=alert_status)](https://sonarcloud.io/dashboard?id=Zenat0r_hexacore)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Zenat0r_hexacore&metric=security_rating)](https://sonarcloud.io/dashboard?id=Zenat0r_hexacore)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Zenat0r_hexacore&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=Zenat0r_hexacore)
 ## Installation
 ### Docker
 For a easier deployment you can use docker and docker-compose :
