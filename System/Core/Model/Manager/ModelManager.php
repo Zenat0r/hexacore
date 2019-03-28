@@ -108,9 +108,14 @@ class ModelManager implements ModelManagerInterface
     /**
      * @inheritdoc
      * @throws \ReflectionException
+     * @throws \Exception
      */
     public function delete(ManageableModelInterface $model)
     {
+        if (empty($model->getId())) {
+            throw new \Exception("Can not delete this model, not a populated ManageableModel");
+        }
+
         $this->qb
             ->model(get_class($model))
             ->where($this->getIdentificator($model), $model->getId())

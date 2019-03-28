@@ -62,10 +62,10 @@ class ModelRepository implements ModelRepositoryInterface
 
     /**
      * @param iterable $data
-     * @return array|mixed|null
+     * @return array|null
      * @throws \Exception
      */
-    private function populateModel(iterable $data)
+    private function populateModel(iterable $data): ?array
     {
         if (0 === sizeof($data)) return null;
         else {
@@ -115,7 +115,13 @@ class ModelRepository implements ModelRepositoryInterface
             ->where($this->getIdentificator(), $id)
             ->get();
 
-        return reset($this->populateModel($result));
+        $models = $this->populateModel($result);
+
+        if (null === $models) {
+            return null;
+        }
+
+        return reset($models);
     }
 
     /**
