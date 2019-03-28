@@ -29,13 +29,12 @@ class UserController extends Controller
     }
 
     /**
-     * @param User $user
+     * @param User|null $user
      * @return ResponseInterface
-     *
      */
-    public function show(User $user): ResponseInterface
+    public function show(?User $user): ResponseInterface
     {
-        if ($user == null) {
+        if (null === $user) {
             return new Response("not found");
         }
 
@@ -47,13 +46,17 @@ class UserController extends Controller
     /**
      * @param ModelManager $modelManager
      * @param Url $url
-     * @param User $user
+     * @param User|null $user
      * @return Response
      * @throws \ReflectionException
      */
-    public function del(ModelManager $modelManager, Url $url, User $user): Response
+    public function del(ModelManager $modelManager, Url $url, ?User $user): Response
     {
-        if ($this->isGranted(Auth::defaultRole)) {
+        if ($this->isGranted(Auth::DEFAULT_ROLE)) {
+            if (null === $user) {
+                return new Response("No user to delete");
+            }
+
             $modelManager->delete($user);
 
             return new RedirectionResponse($url->baseUrl("user"));
@@ -82,14 +85,18 @@ class UserController extends Controller
     /**
      * @param ModelManager $modelManager
      * @param Url $url
-     * @param User $user
+     * @param User|null $user
      * @param string $name
      * @return Response
      * @throws \ReflectionException
      */
-    public function update(ModelManager $modelManager, Url $url, User $user, string $name)
+    public function update(ModelManager $modelManager, Url $url, ?User $user, string $name)
     {
-        if ($this->isGranted(Auth::defaultRole)) {
+        if ($this->isGranted(Auth::DEFAULT_ROLE)) {
+            if (null === $user) {
+                return new Response("No user to update");
+            }
+
             $user->setName($name);
 
             $modelManager->persist($user);

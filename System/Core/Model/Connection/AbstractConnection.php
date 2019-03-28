@@ -32,13 +32,18 @@ abstract class AbstractConnection implements ConnectionInterface
      */
     public function __construct()
     {
-        $this->db = JsonConfig::get("database")["dbname"];
-        if (empty($this->db)) throw new \Exception("Connection configuration wrong");
+        $config = JsonConfig::get("database");
 
-        $this->user = JsonConfig::get("database")["user"] ?? "root";
-        $this->pwd = JsonConfig::get("database")["password"] ?? "";
-        $this->host = JsonConfig::get("database")["host"] ?? "127.0.0.1";
-        $this->port = JsonConfig::get("database")["port"] ?? 3306;
+        $this->db = $config["dbname"];
+
+        if (empty($this->db)) {
+            throw new \Exception("Connection configuration wrong");
+        }
+
+        $this->user = $config["user"] ?? "root";
+        $this->pwd = $config["password"] ?? "";
+        $this->host = $config["host"] ?? "127.0.0.1";
+        $this->port = $config["port"] ?? 3306;
     }
 
     /**

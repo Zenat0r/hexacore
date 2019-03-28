@@ -8,7 +8,7 @@ use Hexacore\Core\Response\Response;
 
 class Auth implements AuthInterface
 {
-    const defaultRole = "ANONYMOUS";
+    const DEFAULT_ROLE = "ANONYMOUS";
 
     private $roles;
     private $storage;
@@ -16,7 +16,7 @@ class Auth implements AuthInterface
     public function __construct()
     {
         $this->roles = JsonConfig::get("app")["Auth"]["roles"] ?? [];
-        array_push($this->roles, Auth::defaultRole);
+        array_push($this->roles, Auth::DEFAULT_ROLE);
     }
 
     public function isGranted(string $role) : bool
@@ -48,7 +48,7 @@ class Auth implements AuthInterface
         if (null === $token) {
             $token = $this->storage->add("token", md5(uniqid()));
 
-            $this->storage->add("USER_ROLE", Auth::defaultRole);
+            $this->storage->add("USER_ROLE", Auth::DEFAULT_ROLE);
         }
     }
 }

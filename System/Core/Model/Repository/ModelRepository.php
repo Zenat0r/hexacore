@@ -67,7 +67,9 @@ class ModelRepository implements ModelRepositoryInterface
      */
     private function populateModel(iterable $data): ?array
     {
-        if (0 === sizeof($data)) return null;
+        if (0 === sizeof($data)) {
+            return null;
+        }
         else {
             $models = [];
 

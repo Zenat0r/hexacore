@@ -2,23 +2,22 @@
 
 namespace Hexacore\Core;
 
-use Hexacore\Core\Event\Dispatcher\EventDispatcherInterface;
+use Hexacore\Core\Auth\AuthInterface;
 use Hexacore\Core\Config\JsonConfig;
-use Hexacore\Core\Request\RequestInterface;
+use Hexacore\Core\DI\DIC;
+use Hexacore\Core\Event\Dispatcher\EventDispatcherInterface;
 use Hexacore\Core\Event\Dispatcher\EventManager;
 use Hexacore\Core\Firewall\FirewallInterface;
-use Hexacore\Core\Storage\StorageInterface;
-use Hexacore\Core\Auth\AuthInterface;
-use Hexacore\Core\Router\Router;
-use Hexacore\Core\Response\ResponseInterface;
-use Hexacore\Core\DI\DIC;
+use Hexacore\Core\Request\RequestInterface;
 use Hexacore\Core\Response\Error\ErrorResponse;
 use Hexacore\Core\Response\Response;
+use Hexacore\Core\Response\ResponseInterface;
+use Hexacore\Core\Router\Router;
 
 class Core
 {
-    const defaultFirewall = "Hexacore\\Core\\Firewall\\DefaultFirewall";
-    const defaultAuth = "Hexacore\\Core\\Auth\\Auth";
+    const DEFAULT_FIREWALL = "Hexacore\\Core\\Firewall\\DefaultFirewall";
+    const DEFAULT_AUTH = "Hexacore\\Core\\Auth\\Auth";
 
     private static $core;
 
@@ -53,7 +52,7 @@ class Core
         try {
             $dic = DIC::start();
 
-            $firewallName = JsonConfig::get("app")["firewall"] ?? Core::defaultFirewall;
+            $firewallName = JsonConfig::get("app")["firewall"] ?? Core::DEFAULT_FIREWALL;
             $firewall = $dic->get($firewallName);
 
             $this->eventManager->notify(EventManager::CORE_FIREWALL_PRE_CHECK, $firewall);
@@ -66,7 +65,7 @@ class Core
 
             $this->eventManager->notify(EventManager::CORE_FIREWALL_POST_CHECK, $firewall);
 
-            $authName = JsonConfig::get("app")["auth"]["class"] ?? Core::defaultAuth;
+            $authName = JsonConfig::get("app")["auth"]["class"] ?? Core::DEFAULT_AUTH;
             $auth = $dic->get($authName);
 
             $this->eventManager->notify(EventManager::CORE_AUTH_PRE_AUTHENTICATE, $auth);

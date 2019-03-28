@@ -70,8 +70,11 @@ class View
     {
         $view = $this;
         foreach ($this->blocks as $_keyBlock => $_block) {
-            $data = array_shift($this->data);
-            if ($data != null) extract($data);
+            $_data = array_shift($this->data);
+
+            if ($_data != null) {
+                extract($_data);
+            }
 
             ob_start();
 

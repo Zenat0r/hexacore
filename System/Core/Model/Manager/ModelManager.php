@@ -20,7 +20,7 @@ class ModelManager implements ModelManagerInterface
     /**
      * @var AbstractQueryBuilder
      */
-    private $qb;
+    private $queryBuilder;
 
     /**
      * ModelManager constructor.
@@ -28,7 +28,7 @@ class ModelManager implements ModelManagerInterface
      */
     public function __construct(AbstractQueryBuilder $qb)
     {
-        $this->qb = $qb;
+        $this->queryBuilder = $qb;
     }
 
     /**
@@ -44,7 +44,7 @@ class ModelManager implements ModelManagerInterface
 
         $reflexionProperties = $reflection->getProperties(\ReflectionProperty::IS_PRIVATE);
 
-        $qb = $this->qb->model($namespace);
+        $qb = $this->queryBuilder->model($namespace);
 
         foreach ($reflexionProperties as $property) {
             $propertyName = $property->getName();
@@ -116,7 +116,7 @@ class ModelManager implements ModelManagerInterface
             throw new \Exception("Can not delete this model, not a populated ManageableModel");
         }
 
-        $this->qb
+        $this->queryBuilder
             ->model(get_class($model))
             ->where($this->getIdentificator($model), $model->getId())
             ->delete();

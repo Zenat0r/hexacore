@@ -27,15 +27,13 @@ abstract class Controller
     protected function render($view, array $data = null, array $options = null): ResponseInterface
     {
         if ($options == null || empty($options["baseView"])) {
-            $options = [
-                "baseView" => "base.php"
-            ];
+            $options["baseView"] = "base.php";
         }
 
         if (is_string($view)) {
             $view = [$view];
             $data = [$data];
-        }        
+        }
 
         $viewCls = $this->injector->get(View::class);
 

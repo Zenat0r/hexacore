@@ -53,9 +53,9 @@ class Request implements RequestInterface
 
     private function getHeaders() : iterable
     {
-        $server = $this->server ?? $_SERVER;
+        $serverData = $this->server ?? $_SERVER;
 
-        foreach ($server as $key => $value) {
+        foreach ($serverData as $key => $value) {
             if (preg_match("/^HTTP_.*$/", $key)) {
                 $headers[str_replace("HTTP_", "", $key)] = $value;
             } else {
