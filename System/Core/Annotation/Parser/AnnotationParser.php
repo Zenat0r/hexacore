@@ -72,6 +72,8 @@ class AnnotationParser implements AnnotationParserInterface
         foreach ($annotationArrayString as $commentLine) {
             if (1 < substr_count($commentLine, "(")) {
                 throw new \Exception("Several annotations on the same line");
+            } else if (preg_match('/"[a-zA-Z0-9.]+,[A-Za-z0-9.]+"/', $commentLine)) {
+                throw new \Exception("String value can't contain ,");
             }
         }
 
