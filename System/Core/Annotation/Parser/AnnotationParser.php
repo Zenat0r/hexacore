@@ -3,6 +3,8 @@
 
 namespace Hexacore\Core\Annotation\Parser;
 
+use Hexacore\Core\Annotation\Type\AnnotationType;
+
 /**
  * Class AnnotationParser
  * @package Hexacore\Core\Annotation\Parser
@@ -50,7 +52,8 @@ class AnnotationParser implements AnnotationParserInterface
             $key = substr($key, 1);
             $value = substr($value, 0, -1);
 
-            $annotationArray[$key] = $this->parseAnnotationValue($value);
+            $annotationValue = $this->parseAnnotationValue($value);
+            $annotationArray[$key] = new AnnotationType($key, $annotationValue);
         }
 
         return $annotationArray;
