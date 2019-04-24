@@ -10,6 +10,8 @@ services:
             - db
         networks:
             - default
+        environment:
+          XDEBUG_CONFIG: remote_host=127.0.0.1
     db:
         image: mysql:5.7
         ports: 
