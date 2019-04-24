@@ -14,38 +14,88 @@ use PHPUnit\Framework\TestCase;
 
 class UrlTest extends TestCase
 {
+    private $url;
+
+    public function __construct($name = null, array $data = [], $dataName = '')
+    {
+        parent::__construct($name, $data, $dataName);
+
+        $this->url = new Url();
+    }
+
+    /**
+     * @uses   \Hexacore\Core\Request\Request::get
+     * @uses   \Hexacore\Core\Request\Request::getServer
+     * @covers \Hexacore\Helpers\Url::baseUrl
+     */
     public function testBaseURl()
     {
-        $this->assertRegExp('/resource$/', (new Url())->baseUrl("resource"));
+        $this->assertRegExp('/resource$/', $this->url->baseUrl("resource"));
     }
 
+    /**
+     * @uses   \Hexacore\Core\Request\Request::get
+     * @uses   \Hexacore\Core\Request\Request::getServer
+     * @covers \Hexacore\Helpers\Url::baseUrl
+     * @covers \Hexacore\Helpers\Url::publicUrl
+     */
     public function testPublicUrl()
     {
-        $this->assertRegExp('/public\/path$/', (new Url())->publicUrl("path"));
+        $this->assertRegExp('/public\/path$/', $this->url->publicUrl("path"));
     }
 
+    /**
+     * @uses   \Hexacore\Core\Request\Request::get
+     * @uses   \Hexacore\Core\Request\Request::getServer
+     * @covers \Hexacore\Helpers\Url::baseUrl
+     * @covers \Hexacore\Helpers\Url::styleUrl
+     */
     public function testStyleUrl()
     {
-        $this->assertRegExp('/public\/css\/path$/', (new Url())->styleUrl("path"));
+        $this->assertRegExp('/public\/css\/path$/', $this->url->styleUrl("path"));
     }
 
+    /**
+     * @uses   \Hexacore\Core\Request\Request::get
+     * @uses   \Hexacore\Core\Request\Request::getServer
+     * @covers \Hexacore\Helpers\Url::baseUrl
+     * @covers \Hexacore\Helpers\Url::scriptUrl
+     */
     public function testScriptUrl()
     {
-        $this->assertRegExp('/public\/js\/path$/', (new Url())->scriptUrl("path"));
+        $this->assertRegExp('/public\/js\/path$/', $this->url->scriptUrl("path"));
     }
 
+    /**
+     * @uses   \Hexacore\Core\Request\Request::get
+     * @uses   \Hexacore\Core\Request\Request::getServer
+     * @covers \Hexacore\Helpers\Url::baseUrl
+     * @covers \Hexacore\Helpers\Url::fontUrl
+     */
     public function testFontUrl()
     {
-        $this->assertRegExp('/public\/font\/path$/', (new Url())->fontUrl("path"));
+        $this->assertRegExp('/public\/font\/path$/', $this->url->fontUrl("path"));
     }
 
+    /**
+     * @uses   \Hexacore\Core\Request\Request::get
+     * @uses   \Hexacore\Core\Request\Request::getServer
+     * @covers \Hexacore\Helpers\Url::baseUrl
+     * @covers \Hexacore\Helpers\Url::imgUrl
+     */
     public function testImgUrl()
     {
-        $this->assertRegExp('/public\/assets\/img\/path$/', (new Url())->imgUrl("path"));
+        $this->assertRegExp('/public\/assets\/img\/path$/', $this->url->imgUrl("path"));
     }
 
+    /**
+     * @uses   \Hexacore\Core\Request\Request::get
+     * @uses   \Hexacore\Core\Request\Request::getServer
+     * @covers \Hexacore\Helpers\Url::baseUrl
+     * @covers \Hexacore\Helpers\Url::videoUrl
+     */
     public function testVideoUrl()
     {
-        $this->assertRegExp('/public\/assets\/vid\/path$/', (new Url())->videoUrl("path"));
+        $this->assertRegExp('/public\/assets\/vid\/path$/', $this->url->videoUrl("path"));
     }
 }

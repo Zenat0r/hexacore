@@ -24,7 +24,7 @@ class AnnotationType
      * @param string $key
      * @param $value
      */
-    public function __construct(string $key, $value)
+    public function __construct(string $key, $value = null)
     {
         $this->key = $key;
         $this->value = $value;
@@ -39,32 +39,10 @@ class AnnotationType
     }
 
     /**
-     * @param string $key
-     * @return AnnotationType
-     */
-    public function setKey(string $key): AnnotationType
-    {
-        $this->key = $key;
-        return $this;
-    }
-
-    /**
      * @return mixed
      */
     public function getValue()
     {
         return $this->value;
     }
-
-    /**
-     * @param mixed $value
-     * @return AnnotationType
-     */
-    public function setValue($value): AnnotationType
-    {
-        $this->value = $value;
-        return $this;
-    }
-
-
 }

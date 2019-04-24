@@ -9,6 +9,7 @@
 namespace Hexacore\Tests\Core;
 
 use Hexacore\Core\Auth\Auth;
+use Hexacore\Core\Auth\AuthInterface;
 use Hexacore\Core\Request\Request;
 use PHPUnit\Framework\TestCase;
 
@@ -20,48 +21,43 @@ use PHPUnit\Framework\TestCase;
  */
 class AuthTest extends TestCase
 {
-    public function testAuthenticateWhenTokenExist()
+    private function authenticate(): AuthInterface
     {
-        $_SESSION["token"] = "mySecuredToken";
-
         $auth = new Auth();
 
         $request = Request::get();
 
         $auth->authenticate($request);
+
+        return $auth;
+    }
+
+    public function testAuthenticateWhenTokenExist()
+    {
+        $_SESSION["token"] = "mySecuredToken";
+
+        $this->authenticate();
 
         $this->assertNotEmpty($_SESSION["USER_ROLE"]);
     }
 
     public function testAuthenticateWhenTokenDoesntExist()
     {
-        $auth = new Auth();
-
-        $request = Request::get();
-
-        $auth->authenticate($request);
+        $this->authenticate();
 
         $this->assertNotEmpty($_SESSION["USER_ROLE"]);
     }
 
     public function testIsGranted()
     {
-        $auth = new Auth();
-
-        $request = Request::get();
-
-        $auth->authenticate($request);
+        $auth = $this->authenticate();
 
         $this->assertTrue($auth->isGranted("ANONYMOUS"));
     }
 
     public function testGetToken()
     {
-        $auth = new Auth();
-
-        $request = Request::get();
-
-        $auth->authenticate($request);
+        $auth = $this->authenticate();
 
         $this->assertNotEmpty($auth->getToken());
     }
