@@ -55,6 +55,9 @@ class Router implements RouterInterface
                 throw new \Exception("Method is not public", Response::NOT_FOUND);
             }
 
+            $actionAnnotationInterpreter = $this->dic->get(ActionAnnotationInterpreter::class);
+            $actionAnnotationInterpreter->interpret(get_class($controller), $actionName);
+
             return $reflectedAction;
         } else {
             throw new \Exception("Action does not exist", Response::NOT_FOUND);

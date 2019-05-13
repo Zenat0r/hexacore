@@ -8,8 +8,8 @@
 
 namespace Hexacore\Tests\Core;
 
+use Hexacore\Core\Annotation\Type\AnnotationType;
 use Hexacore\Core\Auth\Auth;
-use Hexacore\Core\Auth\AuthInterface;
 use Hexacore\Core\Request\Request;
 use PHPUnit\Framework\TestCase;
 
@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
  */
 class AuthTest extends TestCase
 {
-    private function authenticate(): AuthInterface
+    private function authenticate()
     {
         $auth = new Auth();
 
@@ -60,5 +60,54 @@ class AuthTest extends TestCase
         $auth = $this->authenticate();
 
         $this->assertNotEmpty($auth->getToken());
+    }
+
+    public function testGetAnnotationName()
+    {
+        $auth = $this->authenticate();
+
+        $this->assertEquals("Auth", $auth->getAnnotationName());
+    }
+
+    public function testValidAnnotationType()
+    {
+        $annotationType = new AnnotationType("Auth");
+
+        $auth = $this->authenticate();
+
+        $this->assertTrue($auth->isValidAnnotationType($annotationType));
+    }
+
+    public function testUnvalidAnnotationType()
+    {
+        $annotationType = new AnnotationType("test");
+
+        $auth = $this->authenticate();
+
+        $this->assertFalse($auth->isValidAnnotationType($annotationType));
+    }
+
+    public function testProcessRoleDoesntExist()
+    {
+        $annotationType = new AnnotationType("Auth", "TEST_USER");
+
+        $auth = $this->authenticate();
+
+        $this->expectExceptionMessage("Role doesn't exist");
+        $this->expectExceptionCode(401);
+
+        $auth->process($annotationType);
+    }
+
+    public function testProcessRoleExist()
+    {
+        $annotationType = new AnnotationType("Auth", "ADMIN_USER");
+
+        $auth = $this->authenticate();
+
+        $this->expectExceptionMessage("Connection unauthorized");
+        $this->expectExceptionCode(403);
+
+        $auth->process($annotationType);
     }
 }
