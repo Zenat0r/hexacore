@@ -4,7 +4,7 @@ namespace Hexacore\Tests\Core\Model;
 
 use Hexacore\Core\Model\Repository\ModelRepository;
 use Hexacore\Tests\Mocks\Model\ModelMock;
-use Hexacore\Tests\Mocks\QueryBuilderMock;
+use Hexacore\Tests\Mocks\Model\QueryBuilderMock;
 use PHPUnit\Framework\TestCase;
 
 class ModelRepositoryTest extends TestCase

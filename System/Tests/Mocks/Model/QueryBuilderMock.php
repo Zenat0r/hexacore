@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Hexacore\Tests\Mocks;
+namespace Hexacore\Tests\Mocks\Model;
 
 
 use Hexacore\Core\Model\AbstractQueryBuilder;

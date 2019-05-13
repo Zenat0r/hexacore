@@ -49,6 +49,7 @@ class UserController extends Controller
      * @param User|null $user
      * @return Response
      * @throws \ReflectionException
+     * @Auth("ADMIN_USER")
      */
     public function del(ModelManager $modelManager, Url $url, ?User $user): Response
     {
@@ -71,6 +72,7 @@ class UserController extends Controller
      * @param Url $url
      * @return Response
      * @throws \ReflectionException
+     * @Auth("ADMIN_USER")
      */
     public function create(ModelManager $modelManager, string $name, Url $url): Response
     {
@@ -89,6 +91,7 @@ class UserController extends Controller
      * @param string $name
      * @return Response
      * @throws \ReflectionException
+     * @Auth("ADMIN_USER")
      */
     public function update(ModelManager $modelManager, Url $url, ?User $user, string $name)
     {
