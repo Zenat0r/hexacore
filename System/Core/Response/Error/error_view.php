@@ -8,11 +8,11 @@
 </head>
 <body>
     <header>
-        <h1><?php echo $view->content ?></h1>
-        <h3><?php echo "In file : " . $view->headers['file'] . " on line " . $view->headers['line'] ?></h3>
+        <h1><?php echo $this->content ?></h1>
+        <h3><?php echo "In file : " . $this->headers['file'] . " on line " . $this->headers['line'] ?></h3>
     </header>
     <main>
-        <?php echo $view->headers['trace'] ?>
+        <?php echo $this->headers['trace'] ?>
     </main>
 </body>
 </html>
