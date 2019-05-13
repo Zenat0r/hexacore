@@ -10,25 +10,25 @@ class Request implements RequestInterface
 {
     private static $instance;
 
-    private $fullRequest;
+    protected $fullRequest;
 
-    private $method;
+    protected $method;
 
-    private $header;
+    protected $header;
 
-    private $queries;
+    protected $queries;
 
-    private $posts;
+    protected $posts;
 
-    private $payload;
+    protected $payload;
 
-    private $session;
+    protected $session;
 
-    private $files;
+    protected $files;
 
-    private $server;
+    protected $server;
 
-    private $cookies;
+    protected $cookies;
 
     public static function get() : Request
     {
