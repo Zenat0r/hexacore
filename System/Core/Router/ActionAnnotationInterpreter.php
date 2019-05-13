@@ -9,6 +9,7 @@ use Hexacore\Core\Annotation\AnnotationableInterface;
 use Hexacore\Core\Auth\AuthInterface;
 use Hexacore\Core\Config\JsonConfig;
 use Hexacore\Core\DI\DIC;
+use Hexacore\Core\Request\Annotation\RequestMethodChecker;
 
 /**
  * Class ActionAnnotationInterpreter
@@ -62,6 +63,7 @@ class ActionAnnotationInterpreter
     private function loadFrameworkAnnotationableClass(): void
     {
         $this->loadAnnotationableClass(AuthInterface::class);
+        $this->loadAnnotationableClass(RequestMethodChecker::class);
     }
 
     /**
