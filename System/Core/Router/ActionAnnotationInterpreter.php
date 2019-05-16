@@ -44,7 +44,7 @@ class ActionAnnotationInterpreter
     }
 
     /**
-     * Load any annotationalbeClass
+     * Load any annotationableClass
      * @param string $className
      */
     private function loadAnnotationableClass(string $className): void
@@ -52,7 +52,7 @@ class ActionAnnotationInterpreter
         $annotationable = $this->dic->get($className);
 
         if ($annotationable instanceof AnnotationableInterface) {
-            $this->annotationableClasses[$annotationable->getAnnotationName()] = $annotationable;
+            $this->annotationableClasses[] = $annotationable;
         }
     }
 
@@ -97,7 +97,13 @@ class ActionAnnotationInterpreter
             $annotationSupportedName = $annotationableClass->getAnnotationName();
 
             if (array_key_exists($annotationSupportedName, $annotationArray)) {
-                $this->annotationableClasses[$annotationSupportedName]->process($annotationArray[$annotationSupportedName]);
+                $annotationType = $annotationArray[$annotationSupportedName];
+
+                if ($annotationableClass->isValidAnnotationType($annotationType)) {
+                    $annotationableClass->process($annotationType);
+                } else {
+                    throw new \Exception("Annotation for $annotationSupportedName malformed");
+                }
             }
         }
     }
