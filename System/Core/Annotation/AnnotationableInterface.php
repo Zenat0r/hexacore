@@ -15,7 +15,8 @@ use Hexacore\Core\Annotation\Type\AnnotationType;
 interface AnnotationableInterface
 {
     /**
-     * Verify if the annotationType key is the same that the one given as parameter
+     * Verify if the annotationType has the right specification.
+     * Those are defined by the developer.
      *
      * @param AnnotationType $annotationType
      * @return bool
@@ -31,7 +32,11 @@ interface AnnotationableInterface
     public function process(AnnotationType $annotationType): void;
 
     /**
-     * Return the name of the annotationType key compatible with the annotationalbe Class
+     * Return the name of the annotationType key compatible with the annotationable Class.
+     * This value is the name used as annotation in the controller's action.
+     *
+     * e.g : @myAnnotation()
+     * getAnnotationName should then return myAnnotation
      *
      * @return string
      */

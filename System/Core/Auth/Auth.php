@@ -81,7 +81,7 @@ class Auth implements AuthInterface, AnnotationableInterface
      */
     public function isValidAnnotationType(AnnotationType $annotationType): bool
     {
-        return $annotationType->getKey() === $this->getAnnotationName();
+        return $annotationType->getKey() === $this->getAnnotationName() && !empty($annotationType->getValue());
     }
 
     /**
@@ -90,23 +90,21 @@ class Auth implements AuthInterface, AnnotationableInterface
      */
     public function process(AnnotationType $annotationType): void
     {
-        if ($this->isValidAnnotationType($annotationType)) {
-            $role = $annotationType->getValue();
-            $authorized = false;
+        $role = $annotationType->getValue();
+        $authorized = false;
 
-            if (!is_array($role)) {
-                $role = [$role];
-            }
+        if (!is_array($role)) {
+            $role = [$role];
+        }
 
-            foreach ($role as $r) {
-                if ($this->isGranted($r)) {
-                    $authorized = true;
-                }
+        foreach ($role as $r) {
+            if ($this->isGranted($r)) {
+                $authorized = true;
             }
+        }
 
-            if (!$authorized) {
-                throw new \Exception("Connection unauthorized", Response::FORBIDDEN);
-            }
+        if (!$authorized) {
+            throw new \Exception("Connection unauthorized", Response::FORBIDDEN);
         }
     }
 
