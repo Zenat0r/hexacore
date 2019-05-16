@@ -18,6 +18,7 @@ class UserController extends Controller
      * @param ModelRepository $repository
      * @return ResponseInterface
      * @throws \Exception
+     * @Request\Method("GET")
      */
     public function index(ModelRepository $repository): ResponseInterface
     {
@@ -31,6 +32,7 @@ class UserController extends Controller
     /**
      * @param User|null $user
      * @return ResponseInterface
+     * @Request\Method("GET")
      */
     public function show(?User $user): ResponseInterface
     {
@@ -50,6 +52,7 @@ class UserController extends Controller
      * @return Response
      * @throws \ReflectionException
      * @Auth("ADMIN_USER")
+     * @Request\Method("GET")
      */
     public function del(ModelManager $modelManager, Url $url, ?User $user): Response
     {
@@ -73,6 +76,7 @@ class UserController extends Controller
      * @return Response
      * @throws \ReflectionException
      * @Auth("ADMIN_USER")
+     * @Request\Method("GET")
      */
     public function create(ModelManager $modelManager, string $name, Url $url): Response
     {
@@ -92,6 +96,7 @@ class UserController extends Controller
      * @return Response
      * @throws \ReflectionException
      * @Auth("ADMIN_USER")
+     * @Request\Method("GET")
      */
     public function update(ModelManager $modelManager, Url $url, ?User $user, string $name)
     {
