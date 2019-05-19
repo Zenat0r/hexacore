@@ -2,6 +2,8 @@
 
 namespace Hexacore\Core\Config;
 
+use Hexacore\Core\Exception\Config\MissingFileException;
+
 class JsonConfig implements ConfigInterface
 {
     /** @var array */
@@ -36,7 +38,7 @@ class JsonConfig implements ConfigInterface
             $string = file_get_contents($filepath);
             $this->params[$filepath] = json_decode($string, true);
         } else {
-            throw new \Exception("Config file missing");
+            throw new MissingFileException("Config file missing");
         }
     }
 

@@ -56,7 +56,7 @@ class RequestMethodChecker implements AnnotationableInterface
         }
 
         if (!in_array($request->getMethod(), $method)) {
-            throw new \Exception("Request method not allowed", Response::FORBIDDEN);
+            throw new \OutOfRangeException("Request method not allowed", Response::FORBIDDEN);
         }
     }
 

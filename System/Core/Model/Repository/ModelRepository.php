@@ -9,6 +9,9 @@
 namespace Hexacore\Core\Model\Repository;
 
 
+use Hexacore\Core\Exception\Model\IdentificatorModelException;
+use Hexacore\Core\Exception\Model\MissingSetterModelException;
+use Hexacore\Core\Exception\Model\ModelException;
 use Hexacore\Core\Model\AbstractQueryBuilder;
 use Hexacore\Core\Model\ManageableModelInterface;
 
@@ -57,7 +60,7 @@ class ModelRepository implements ModelRepositoryInterface
             }
         }
 
-        throw new \Exception("Missing ManagableModel identificator");
+        throw new IdentificatorModelException("Missing ManagableModel identificator");
     }
 
     /**
@@ -69,8 +72,7 @@ class ModelRepository implements ModelRepositoryInterface
     {
         if (0 === sizeof($data)) {
             return null;
-        }
-        else {
+        } else {
             $models = [];
 
             foreach ($data as $row) {
@@ -82,7 +84,7 @@ class ModelRepository implements ModelRepositoryInterface
                         if (method_exists($this->model, $setterName)) {
                             $model->$setterName($elt);
                         } else {
-                            throw new \Exception("Setter for $key doesn't exist");
+                            throw new MissingSetterModelException("Setter for $key doesn't exist");
                         }
                     }
                 }
@@ -110,7 +112,7 @@ class ModelRepository implements ModelRepositoryInterface
     public function findById(int $id): ?ManageableModelInterface
     {
         if (null == $this->model) {
-            throw new \Exception("No model set");
+            throw new ModelException("No model set");
         }
 
         $result = $this->qb
@@ -133,7 +135,7 @@ class ModelRepository implements ModelRepositoryInterface
     public function findAll()
     {
         if (null == $this->model) {
-            throw new \Exception("No model set");
+            throw new ModelException("No model set");
         }
 
         $result = $this->qb

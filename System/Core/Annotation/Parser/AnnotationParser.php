@@ -4,6 +4,7 @@
 namespace Hexacore\Core\Annotation\Parser;
 
 use Hexacore\Core\Annotation\Type\AnnotationType;
+use Hexacore\Core\Exception\Annotation\MalformedAnnotationStringException;
 
 /**
  * Class AnnotationParser
@@ -74,9 +75,9 @@ class AnnotationParser implements AnnotationParserInterface
 
         foreach ($annotationArrayString as $commentLine) {
             if (1 < substr_count($commentLine, "(")) {
-                throw new \Exception("Several annotations on the same line");
+                throw new MalformedAnnotationStringException("Several annotations on the same line");
             } else if (preg_match('/"[a-zA-Z0-9._]+,[A-Za-z0-9._]+"/', $commentLine)) {
-                throw new \Exception("String value can't contain ,");
+                throw new MalformedAnnotationStringException("String value can't contain ,");
             }
         }
 

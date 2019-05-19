@@ -8,6 +8,9 @@
 
 namespace Hexacore\Core\Model\Manager;
 
+use Hexacore\Core\Exception\Model\IdentificatorModelException;
+use Hexacore\Core\Exception\Model\MissingGetterModelException;
+use Hexacore\Core\Exception\Model\PopulatedModelException;
 use Hexacore\Core\Model\AbstractQueryBuilder;
 use Hexacore\Core\Model\ManageableModelInterface;
 
@@ -55,7 +58,7 @@ class ModelManager implements ModelManagerInterface
                     $qb->set($propertyName, $value);
                 }
             } else {
-                throw new \Exception("Getter for $propertyName doesn't exist");
+                throw new MissingGetterModelException("Getter for $propertyName doesn't exist");
             }
         }
 
@@ -80,7 +83,7 @@ class ModelManager implements ModelManagerInterface
             }
         }
 
-        throw new \Exception("Missing ManagableModel identificator");
+        throw new IdentificatorModelException("Missing ManagableModel identificator");
     }
 
     /**
@@ -113,7 +116,7 @@ class ModelManager implements ModelManagerInterface
     public function delete(ManageableModelInterface $model)
     {
         if (empty($model->getId())) {
-            throw new \Exception("Can not delete this model, not a populated ManageableModel");
+            throw new PopulatedModelException("Can not delete this model, not a populated ManageableModel");
         }
 
         $this->queryBuilder

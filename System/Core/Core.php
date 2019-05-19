@@ -7,6 +7,7 @@ use Hexacore\Core\Config\JsonConfig;
 use Hexacore\Core\DI\DIC;
 use Hexacore\Core\Event\Dispatcher\EventDispatcherInterface;
 use Hexacore\Core\Event\Dispatcher\EventManager;
+use Hexacore\Core\Exception\UnacceptableCoreModuleException;
 use Hexacore\Core\Firewall\FirewallInterface;
 use Hexacore\Core\Request\RequestInterface;
 use Hexacore\Core\Response\Error\ErrorResponse;
@@ -60,7 +61,7 @@ class Core
             if ($firewall instanceof FirewallInterface) {
                 $firewall->check($request);
             } else {
-                throw new \Exception("Firewall instance uncompatible", Response::INTERNAL_SERVER_ERROR);
+                throw new UnacceptableCoreModuleException("Firewall instance unacceptable", Response::INTERNAL_SERVER_ERROR);
             }
 
             $this->eventManager->notify(EventManager::CORE_FIREWALL_POST_CHECK, $firewall);
@@ -73,7 +74,7 @@ class Core
             if ($auth instanceof AuthInterface) {
                 $auth->authenticate($request);
             } else {
-                throw new \Exception("Auth instance uncompatible", Response::INTERNAL_SERVER_ERROR);
+                throw new UnacceptableCoreModuleException("Auth instance unacceptable", Response::INTERNAL_SERVER_ERROR);
             }
 
             $this->eventManager->notify(EventManager::CORE_AUTH_POST_AUTHENTICATE, $auth);

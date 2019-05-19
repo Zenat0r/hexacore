@@ -5,6 +5,8 @@ namespace Hexacore\Core\Auth;
 use Hexacore\Core\Annotation\AnnotationableInterface;
 use Hexacore\Core\Annotation\Type\AnnotationType;
 use Hexacore\Core\Config\JsonConfig;
+use Hexacore\Core\Exception\Auth\InvalidRoleAuthException;
+use Hexacore\Core\Exception\Auth\UnauthorizedAuthException;
 use Hexacore\Core\Request\RequestInterface;
 use Hexacore\Core\Response\Response;
 
@@ -35,7 +37,7 @@ class Auth implements AuthInterface, AnnotationableInterface
     {
         $role = strtoupper($role);
         if (!in_array($role, $this->roles)) {
-            throw new \Exception("Role doesn't exist", Response::UNAUTHORIZED);
+            throw new InvalidRoleAuthException("Role doesn't exist", Response::UNAUTHORIZED);
         }
 
         if (self::$storage->get("USER_ROLE") === $role) {
@@ -104,7 +106,7 @@ class Auth implements AuthInterface, AnnotationableInterface
         }
 
         if (!$authorized) {
-            throw new \Exception("Connection unauthorized", Response::FORBIDDEN);
+            throw new UnauthorizedAuthException("Connection unauthorized", Response::FORBIDDEN);
         }
     }
 

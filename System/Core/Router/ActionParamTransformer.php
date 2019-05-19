@@ -5,6 +5,8 @@ namespace Hexacore\Core\Router;
 
 
 use Hexacore\Core\DI\DIC;
+use Hexacore\Core\Exception\Router\InvalidGetterException;
+use Hexacore\Core\Exception\Router\RouterException;
 use Hexacore\Core\Model\ManageableModelInterface;
 use Hexacore\Core\Model\Repository\ModelRepository;
 use Hexacore\Core\Request\Request;
@@ -64,7 +66,7 @@ class ActionParamTransformer
         if ($parameter === null && $param->isDefaultValueAvailable()) {
             $paramValue = $param->getDefaultValue();
         } elseif ($parameter === null) {
-            throw new \Exception("Missing getters", Response::NOT_FOUND);
+            throw new RouterException("Missing getters", Response::NOT_FOUND);
         } else {
             $paramType = $param->getType()->getName();
 
@@ -101,7 +103,7 @@ class ActionParamTransformer
         }
 
         if (!empty($items)) {
-            throw new \Exception("Too many getters", Response::NOT_FOUND);
+            throw new InvalidGetterException("Too many getters", Response::NOT_FOUND);
         }
 
         return $parameters;

@@ -18,7 +18,7 @@ class UserController extends Controller
      * @param ModelRepository $repository
      * @return ResponseInterface
      * @throws \Exception
-     * @Request\Method("GET")
+     * @Request\Method("GET", "POST")
      */
     public function index(ModelRepository $repository): ResponseInterface
     {

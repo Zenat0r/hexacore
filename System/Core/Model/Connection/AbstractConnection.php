@@ -10,6 +10,7 @@ namespace Hexacore\Core\Model\Connection;
 
 
 use Hexacore\Core\Config\JsonConfig;
+use Hexacore\Core\Exception\Model\ConnectionConfigException;
 
 /**
  * Abstract implementation of ConnectionInterface.
@@ -37,7 +38,7 @@ abstract class AbstractConnection implements ConnectionInterface
         $this->db = $config["dbname"];
 
         if (empty($this->db)) {
-            throw new \Exception("Connection configuration wrong");
+            throw new ConnectionConfigException("Connection configuration wrong");
         }
 
         $this->user = $config["user"] ?? "root";
@@ -57,6 +58,8 @@ abstract class AbstractConnection implements ConnectionInterface
     public function setDb(string $name): ConnectionInterface
     {
         $this->db = $name;
+
+        return $this;
     }
 
     /**
@@ -65,6 +68,8 @@ abstract class AbstractConnection implements ConnectionInterface
     public function setUser(string $name): ConnectionInterface
     {
         $this->user = $name;
+
+        return $this;
     }
 
     /**
@@ -73,6 +78,8 @@ abstract class AbstractConnection implements ConnectionInterface
     public function setPwd(string $pwd): ConnectionInterface
     {
         $this->pwd = $pwd;
+
+        return $this;
     }
 
     /**
@@ -81,6 +88,8 @@ abstract class AbstractConnection implements ConnectionInterface
     public function setHost(string $host): ConnectionInterface
     {
         $this->host = $host;
+
+        return $this;
     }
 
     /**
@@ -89,5 +98,7 @@ abstract class AbstractConnection implements ConnectionInterface
     public function setPort(int $port): ConnectionInterface
     {
         $this->port = $port;
+
+        return $this;
     }
 }

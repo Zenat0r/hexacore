@@ -9,6 +9,7 @@ use Hexacore\Core\Annotation\AnnotationableInterface;
 use Hexacore\Core\Auth\AuthInterface;
 use Hexacore\Core\Config\JsonConfig;
 use Hexacore\Core\DI\DIC;
+use Hexacore\Core\Exception\Annotation\MalformedAnnotationTypeException;
 use Hexacore\Core\Request\Annotation\RequestMethodChecker;
 
 /**
@@ -104,7 +105,7 @@ class ActionAnnotationInterpreter
                 if ($annotationableClass->isValidAnnotationType($annotationType)) {
                     $annotationableClass->process($annotationType);
                 } else {
-                    throw new \Exception("Annotation for $annotationSupportedName malformed");
+                    throw new MalformedAnnotationTypeException("Annotation for $annotationSupportedName malformed");
                 }
             }
         }

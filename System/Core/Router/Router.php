@@ -6,6 +6,7 @@ use Hexacore\Core\Auth\AuthInterface;
 use Hexacore\Core\Config\JsonConfig;
 use Hexacore\Core\Controller;
 use Hexacore\Core\DI\DIC;
+use Hexacore\Core\Exception\Router\RouterException;
 use Hexacore\Core\Request\RequestInterface;
 use Hexacore\Core\Response\Response;
 use Hexacore\Core\Response\ResponseInterface;
@@ -52,7 +53,7 @@ class Router implements RouterInterface
             $reflectedAction = new \ReflectionMethod($controller, $actionName);
 
             if (!$reflectedAction->isPublic()) {
-                throw new \Exception("Method is not public", Response::NOT_FOUND);
+                throw new RouterException("Method is not public", Response::NOT_FOUND);
             }
 
             $actionAnnotationInterpreter = $this->dic->get(ActionAnnotationInterpreter::class);
@@ -60,7 +61,7 @@ class Router implements RouterInterface
 
             return $reflectedAction;
         } else {
-            throw new \Exception("Action does not exist", Response::NOT_FOUND);
+            throw new RouterException("Action does not exist", Response::NOT_FOUND);
         }
     }
 
@@ -79,14 +80,14 @@ class Router implements RouterInterface
             $controller = $this->dic->get($controllerNamespace);
 
             if (!$controller instanceof Controller) {
-                throw new \Exception("Controller not a child of Controller class", Response::INTERNAL_SERVER_ERROR);
+                throw new RouterException("Controller not a child of Controller class", Response::INTERNAL_SERVER_ERROR);
             }
 
             $controller->initialize($this->dic, $this->auth);
 
             return $controller;
         } else {
-            throw new \Exception("Controller file does not exist", Response::NOT_FOUND);
+            throw new RouterException("Controller file does not exist", Response::NOT_FOUND);
         }
     }
 

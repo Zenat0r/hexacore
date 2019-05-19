@@ -2,8 +2,10 @@
 
 namespace Hexacore\Database\MySql;
 
+use Hexacore\Core\Exception\Model\ModelException;
 use Hexacore\Core\Model\AbstractQueryBuilder;
 use Hexacore\Core\Model\QueryBuilderInterface;
+use Hexacore\Database\MySql\Exception\QueryBuilderException;
 
 /**
  * Implementation of QueryBuilder for the SQL database like.
@@ -86,7 +88,7 @@ class QueryBuilder extends AbstractQueryBuilder
     public function where(string $selector, $value, string $operator = "="): QueryBuilderInterface
     {
         if (!in_array($operator, self::ALLOWED_OPERATOR)) {
-            throw new \Exception("Operator not allowed");
+            throw new \OutOfRangeException("Operator not allowed");
         }
 
         if (null == $this->where) {
@@ -107,7 +109,7 @@ class QueryBuilder extends AbstractQueryBuilder
     public function orWhere(string $selector, $value, string $operator = "="): QueryBuilderInterface
     {
         if (!in_array($operator, self::ALLOWED_OPERATOR)) {
-            throw new \Exception("Operator not allowed");
+            throw new \OutOfRangeException("Operator not allowed");
         }
 
         if (null == $this->where) {
@@ -162,7 +164,7 @@ class QueryBuilder extends AbstractQueryBuilder
     public function get(int $limit = null, int $offset = 0): iterable
     {
         if (null == $this->model) {
-            throw new \Exception("No model set");
+            throw new ModelException("No model set");
         }
         if (null == $this->filter) {
             $this->filter = ["*"];
@@ -193,7 +195,7 @@ class QueryBuilder extends AbstractQueryBuilder
     public function delete()
     {
         if (null == $this->model) {
-            throw new \Exception("No model set");
+            throw new ModelException("No model set");
         }
         $this->query = "DELETE FROM {$this->model}";
 
@@ -202,7 +204,7 @@ class QueryBuilder extends AbstractQueryBuilder
 
             return $this->execute($this->query, $this->params);
         } else {
-            throw new \Exception("Can not delete wihout where statement");
+            throw new QueryBuilderException("Can not delete without where statement");
         }
     }
 
@@ -213,10 +215,10 @@ class QueryBuilder extends AbstractQueryBuilder
     public function insert()
     {
         if (null == $this->model) {
-            throw new \Exception("No model set");
+            throw new ModelException("No model set");
         }
         if (null == $this->sets) {
-            throw new \Exception("no values to insert");
+            throw new QueryBuilderException("no values to insert");
         }
 
         $this->query = "INSERT INTO {$this->model}(";
@@ -245,14 +247,14 @@ class QueryBuilder extends AbstractQueryBuilder
     public function update()
     {
         if (null == $this->model) {
-            throw new \Exception("No model set");
+            throw new ModelException("No model set");
         }
         if (null == $this->sets) {
-            throw new \Exception("no values to update");
+            throw new QueryBuilderException("no values to update");
         }
 
         if (null == $this->where) {
-            throw new \Exception("Warning: no where statement (add arg false to run anyway)");
+            throw new QueryBuilderException("no where statement");
         }
 
         $this->query = "UPDATE {$this->model} SET";
