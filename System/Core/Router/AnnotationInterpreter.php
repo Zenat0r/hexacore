@@ -13,10 +13,10 @@ use Hexacore\Core\Exception\Annotation\MalformedAnnotationTypeException;
 use Hexacore\Core\Request\Annotation\RequestMethodChecker;
 
 /**
- * Class ActionAnnotationInterpreter
+ * Class AnnotationInterpreter
  * @package Hexacore\Core\Router
  */
-class ActionAnnotationInterpreter
+class AnnotationInterpreter
 {
     /**
      * @var DIC
@@ -34,7 +34,7 @@ class ActionAnnotationInterpreter
     private $annotationableClasses;
 
     /**
-     * ActionAnnotationInterpreter constructor.
+     * AnnotationInterpreter constructor.
      * @param Annotation $annotation
      */
     public function __construct(Annotation $annotation)
@@ -92,9 +92,9 @@ class ActionAnnotationInterpreter
      * @param string $method
      * @throws \ReflectionException
      */
-    public function interpret(string $class, string $method): void
+    public function interpret(string $class, string $method = null): void
     {
-        $annotationArray = $this->annotation->getMethodAnnotations($class, $method);
+        $annotationArray = is_null($method) ? $this->annotation->getClassAnnotations($class) : $this->annotation->getMethodAnnotations($class, $method);
 
         foreach ($this->annotationableClasses as $annotationableClass) {
             $annotationSupportedName = $annotationableClass->getAnnotationName();

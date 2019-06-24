@@ -56,8 +56,8 @@ class Router implements RouterInterface
                 throw new RouterException("Method is not public", Response::NOT_FOUND);
             }
 
-            $actionAnnotationInterpreter = $this->dic->get(ActionAnnotationInterpreter::class);
-            $actionAnnotationInterpreter->interpret(get_class($controller), $actionName);
+            $annotationInterpreter = $this->dic->get(AnnotationInterpreter::class);
+            $annotationInterpreter->interpret(get_class($controller), $actionName);
 
             return $reflectedAction;
         } else {
@@ -82,6 +82,9 @@ class Router implements RouterInterface
             if (!$controller instanceof Controller) {
                 throw new RouterException("Controller not a child of Controller class", Response::INTERNAL_SERVER_ERROR);
             }
+
+            $annotationInterpreter = $this->dic->get(AnnotationInterpreter::class);
+            $annotationInterpreter->interpret(get_class($controller));
 
             $controller->initialize($this->dic, $this->auth);
 
