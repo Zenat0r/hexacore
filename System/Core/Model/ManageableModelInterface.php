@@ -21,11 +21,11 @@ interface ManageableModelInterface
     /**
      * @return int|null
      */
-    public function getId(): ?int;
+    public function getId();
 
     /**
      * @param int $id
      * @return ManageableModelInterface
      */
-    public function setId(int $id): ManageableModelInterface;
+    public function setId($id): ManageableModelInterface;
 }

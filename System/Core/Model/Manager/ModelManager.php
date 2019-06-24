@@ -51,6 +51,8 @@ class ModelManager implements ModelManagerInterface
 
         foreach ($reflexionProperties as $property) {
             $propertyName = $property->getName();
+            $propertyName = preg_match("/id$/", $propertyName) ? "id" : $propertyName;
+
             $getterName = "get" . ucfirst($propertyName);
 
             if (method_exists($model, $getterName)) {

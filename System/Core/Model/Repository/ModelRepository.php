@@ -80,6 +80,8 @@ class ModelRepository implements ModelRepositoryInterface
 
                 foreach ($row as $key => $elt) {
                     if (!is_null($elt)) {
+                        $key = preg_match("/id$/", $key) ? "id" : $key;
+
                         $setterName = "set" . ucfirst($key);
                         if (method_exists($this->model, $setterName)) {
                             $model->$setterName($elt);
@@ -109,7 +111,7 @@ class ModelRepository implements ModelRepositoryInterface
     /**
      * @inheritdoc
      */
-    public function findById(int $id): ?ManageableModelInterface
+    public function findById($id): ?ManageableModelInterface
     {
         if (null == $this->model) {
             throw new ModelException("No model set");

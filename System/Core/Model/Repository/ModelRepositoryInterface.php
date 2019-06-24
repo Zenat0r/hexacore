@@ -30,7 +30,7 @@ interface ModelRepositoryInterface
      * @return ManageableModelInterface
      * @throws \Exception
      */
-    public function findById(int $id): ?ManageableModelInterface;
+    public function findById($id): ?ManageableModelInterface;
 
     /**
      * @return array|mixed|null
