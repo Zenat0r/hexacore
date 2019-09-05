@@ -9,5 +9,7 @@ jobs:
       - uses: actions/checkout@master
       - name: test
         run: |
-          cd ${GITHUB_WORKSPACE}/System/Tests/
+          cd ${GITHUB_WORKSPACE}
+          php -S localhost:80 -t public/index.php
+          cd System/Tests/
           phpunit --bootstrap autoload.php --configuration ../phpunit.xml
