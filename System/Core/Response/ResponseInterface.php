@@ -16,6 +16,15 @@ interface ResponseInterface
     public function setHeader(string $key, string $value): self;
 
     /**
+     * Set cookies values
+     *
+     * @param string $name
+     * @param null $value
+     * @return ResponseInterface
+     */
+    public function setCookie(string $name, $value): self;
+
+    /**
      * Set http code
      *
      * @param integer $code

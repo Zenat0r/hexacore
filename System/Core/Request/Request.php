@@ -4,7 +4,9 @@ namespace Hexacore\Core\Request;
 
 use Hexacore\Core\Storage\Cookie\Cookie;
 use Hexacore\Core\Storage\Cookie\CookieInterface;
+use Hexacore\Core\Storage\Header;
 use Hexacore\Core\Storage\Session\Session;
+use Hexacore\Core\Storage\StorageInterface;
 
 class Request implements RequestInterface
 {
@@ -30,7 +32,7 @@ class Request implements RequestInterface
 
     protected $cookies;
 
-    public static function get() : Request
+    public static function get(): Request
     {
         if (is_null(self::$instance)) {
             self::$instance = new Request();
@@ -44,45 +46,29 @@ class Request implements RequestInterface
         $this->server = $_SERVER;
         $this->fullRequest = (isset($this->server['HTTPS']) && $this->server['HTTPS'] === 'on' ? "https" : "http") . "://{$this->server['HTTP_HOST']}{$this->server['REQUEST_URI']}";
         $this->method = $this->server["REQUEST_METHOD"];
-        $this->header = $this->getHeaders();
+        $this->header = new Header();
         $this->queries = $_GET;
         $this->posts = $_POST;
         $this->payload = file_get_contents("php://input");
         $this->files = $_FILES;
     }
 
-    private function getHeaders() : iterable
-    {
-        $serverData = $this->server ?? $_SERVER;
-
-        foreach ($serverData as $key => $value) {
-            if (preg_match("/^HTTP_.*$/", $key)) {
-                $headers[str_replace("HTTP_", "", $key)] = $value;
-            } else {
-                $headers[$key] = $value;
-            }
-        }
-
-        return $headers;
-    }
-
-    public function getFullRequest() : string
+    public function getFullRequest(): string
     {
         return $this->fullRequest;
     }
 
-    public function getMethod() : string
+    public function getMethod(): string
     {
         return $this->method;
     }
 
-    public function getHeader(string $name) : string
+    public function getHeader(): StorageInterface
     {
-        $name = strtoupper($name);
-        return $this->header[$name];
+        return $this->header;
     }
 
-    public function getQueries() : ?iterable
+    public function getQueries(): ?iterable
     {
         return $this->queries;
     }
@@ -92,7 +78,7 @@ class Request implements RequestInterface
         return $this->queries[$name];
     }
 
-    public function getPosts() : ?iterable
+    public function getPosts(): ?iterable
     {
         return $this->posts;
     }
@@ -107,7 +93,7 @@ class Request implements RequestInterface
         return $this->payload;
     }
 
-    public function getSession() : Session
+    public function getSession(): Session
     {
         if (is_null($this->session)) {
             $this->session = new Session();
@@ -116,7 +102,7 @@ class Request implements RequestInterface
         return $this->session;
     }
 
-    public function getServers() : iterable
+    public function getServers(): iterable
     {
         return $this->server;
     }
@@ -135,7 +121,7 @@ class Request implements RequestInterface
         return $this->cookies;
     }
 
-    public function getFiles() : ?iterable
+    public function getFiles(): ?iterable
     {
         return $this->files;
     }

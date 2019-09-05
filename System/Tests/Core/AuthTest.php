@@ -75,7 +75,7 @@ class AuthTest extends TestCase
 
         $auth = $this->authenticate();
 
-        $this->assertTrue($auth->isValidAnnotationType($annotationType));
+        $this->assertFalse($auth->isValidAnnotationType($annotationType));
     }
 
     public function testUnvalidAnnotationType()

@@ -1,12 +1,13 @@
 <?php
 
-namespace Hexacore\Core;
+namespace Hexacore\Core\View;
 
 use Hexacore\Core\Response\Response;
 use Hexacore\Core\Response\ResponseInterface;
+use Hexacore\Core\View\ViewInterface;
 use Hexacore\Helpers\Url;
 
-class View
+class View implements ViewInterface
 {
     private $blocks;
     private $data;
@@ -15,20 +16,17 @@ class View
 
     public function __construct(Url $url)
     {
-        $this->url = $url;        
+        $this->url = $url;
     }
 
-    public function init(array $views, array $data, string $base): void
+    public function init(array $options = null): void
     {
-        foreach ($views as $key => $view) {
-            if (is_int($key)) {
-                $this->blocks["block" . ucfirst(++$key)] = $view;
-            } else {
-                $this->blocks[$key] = $view;
-            }
+        if ($options === null || empty($options['baseView'])) {
+            $this->base = 'base.php';
+        } else {
+            $this->base = $options['baseView'];
         }
-        $this->data = $data;
-        $this->base = $base;
+
     }
 
     public function baseUrl(string $resource): string
@@ -66,26 +64,21 @@ class View
         return $this->url->videoUrl($path);
     }
 
-    public function create(): ResponseInterface
+    public function create(string $viewPath, array $data = []): ResponseInterface
     {
-        $view = $this;
-        foreach ($this->blocks as $_keyBlock => $_block) {
-            $_data = array_shift($this->data);
-
-            if ($_data != null) {
-                extract($_data);
-            }
-
-            ob_start();
-
-            require __DIR__ . "/../../App/src/views/" . $_block;
-
-            ${$_keyBlock} = ob_get_clean();
+        if (!empty($data)) {
+            extract($this->data);
         }
 
         ob_start();
 
-        require __DIR__ . "/../../App/src/views/" . $this->base;
+        require __DIR__ . "/../../../App/src/views/" . $viewPath;
+
+        $view = ob_get_clean();
+
+        ob_start();
+
+        require __DIR__ . "/../../../App/src/views/" . $this->base;
 
         $render = ob_get_clean();
 

@@ -8,7 +8,7 @@ use Hexacore\Core\Request\ForwardRequest;
 use Hexacore\Core\Response\Response;
 use Hexacore\Core\Response\ResponseInterface;
 use Hexacore\Core\Router\Router;
-use mysql_xdevapi\Exception;
+use Hexacore\Core\View\ViewInterface;
 
 
 abstract class Controller
@@ -34,22 +34,13 @@ abstract class Controller
         return $this->auth->isGranted($role);
     }
 
-    protected function render($view, array $data = null, array $options = null): ResponseInterface
+    protected function render(string $view, array $data = [], array $options = null): ResponseInterface
     {
-        if ($options == null || empty($options["baseView"])) {
-            $options["baseView"] = "base.php";
-        }
+        $viewCls = $this->injector->get(ViewInterface::class);
 
-        if (is_string($view)) {
-            $view = [$view];
-            $data = [$data];
-        }
+        $viewCls->init($options);
 
-        $viewCls = $this->injector->get(View::class);
-
-        $viewCls->init($view, $data, $options["baseView"]);
-
-        return $viewCls->create();
+        return $viewCls->create($view, $data);
     }
 
     /**

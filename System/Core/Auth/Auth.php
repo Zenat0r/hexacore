@@ -9,6 +9,7 @@ use Hexacore\Core\Exception\Auth\InvalidRoleAuthException;
 use Hexacore\Core\Exception\Auth\UnauthorizedAuthException;
 use Hexacore\Core\Request\RequestInterface;
 use Hexacore\Core\Response\Response;
+use Hexacore\Core\Storage\StorageInterface;
 
 /**
  * Class Auth
@@ -19,12 +20,19 @@ class Auth implements AuthInterface, AnnotationableInterface
     const DEFAULT_ROLE = "ANONYMOUS";
     const ANNOTATION_NAME = "Auth";
 
-    private $roles;
-    private static $storage;
+    /**
+     * @var array
+     */
+    protected $roles;
+
+    /**
+     * @var StorageInterface
+     */
+    protected static $storage;
 
     public function __construct()
     {
-        $this->roles = JsonConfig::get("app")["Auth"]["roles"] ?? [];
+        $this->roles = JsonConfig::get()["Auth"]["roles"] ?? [];
         array_push($this->roles, Auth::DEFAULT_ROLE);
     }
 
@@ -33,7 +41,7 @@ class Auth implements AuthInterface, AnnotationableInterface
      * @return bool
      * @throws \Exception
      */
-    public function isGranted(string $role) : bool
+    public function isGranted(string $role): bool
     {
         $role = strtoupper($role);
         if (!in_array($role, $this->roles)) {
@@ -50,14 +58,14 @@ class Auth implements AuthInterface, AnnotationableInterface
     /**
      * @return string|null
      */
-    public function getToken() : ?string
+    public function getToken(): ?string
     {
         $token = self::$storage->get("token") ?? null;
 
         return $token;
     }
 
-    public function authenticate(RequestInterface $request) : void
+    public function authenticate(RequestInterface $request): void
     {
         self::$storage = $request->getSession();
         $token = $this->getToken();
@@ -72,9 +80,15 @@ class Auth implements AuthInterface, AnnotationableInterface
     /**
      * @param string $role
      */
-    public function setRole(string $role): void
+    public function setToken(string $role): void
     {
         self::$storage->add("USER_ROLE", $role);
+    }
+
+
+    public function removeToken(): void
+    {
+        self::$storage->remove("USER_ROLE");
     }
 
     /**

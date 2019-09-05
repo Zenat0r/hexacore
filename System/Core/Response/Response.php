@@ -3,13 +3,28 @@
 namespace Hexacore\Core\Response;
 
 use Hexacore\Core\Request\RequestInterface;
+use Hexacore\Core\Storage\Cookie\Cookie;
 
 class Response implements ResponseInterface
 {
+    /**
+     * @var array
+     */
     protected $headers;
 
+    /**
+     * @var int
+     */
     protected $code;
 
+    /**
+     * @var Cookie
+     */
+    private $cookie;
+
+    /**
+     * @var String
+     */
     protected $content;
 
     //https://http.cat
@@ -66,8 +81,8 @@ class Response implements ResponseInterface
     const BANDWIDTH_LIMIT_EXCEEDED = 509;
     const NOT_EXTENDED = 510;
     const NETWORK_AUTHENTICATION_REQUIRED = 511;
-    const NETWORK_CONNECT_TIMEOUT_ERROR = 599;
 
+    const NETWORK_CONNECT_TIMEOUT_ERROR = 599;
     public static $status = [
         100 => "Continue",
         101 => "Switching Protocols",
@@ -132,12 +147,20 @@ class Response implements ResponseInterface
     {
         $this->content = $content;
         $this->headers = $headers;
+        $this->cookie = new Cookie();
         $this->code = $code;
     }
 
     public function setHeader(string $key, string $value): ResponseInterface
     {
         $this->headers[$key] = $value;
+
+        return $this;
+    }
+
+    public function setCookie(string $name, $value) : ResponseInterface
+    {
+        $this->cookie->add($name, $value);
 
         return $this;
     }

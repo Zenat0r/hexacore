@@ -1,5 +1,12 @@
 {
     "version": "0.1",
     "defaultController": "Index",
-    "defaultAction": "index"
+    "defaultAction": "index",
+    "eventSubscriber": [
+    ],
+    "Auth": {
+        "roles": [
+            "ADMIN_USER"
+        ]
+    }
 }

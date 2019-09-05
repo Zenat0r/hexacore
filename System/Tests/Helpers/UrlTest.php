@@ -41,7 +41,7 @@ class UrlTest extends TestCase
      */
     public function testPublicUrl()
     {
-        $this->assertRegExp('/public\/path$/', $this->url->publicUrl("path"));
+        $this->assertRegExp('/path$/', $this->url->publicUrl("path"));
     }
 
     /**
@@ -52,7 +52,7 @@ class UrlTest extends TestCase
      */
     public function testStyleUrl()
     {
-        $this->assertRegExp('/public\/css\/path$/', $this->url->styleUrl("path"));
+        $this->assertRegExp('/css\/path$/', $this->url->styleUrl("path"));
     }
 
     /**
@@ -63,7 +63,7 @@ class UrlTest extends TestCase
      */
     public function testScriptUrl()
     {
-        $this->assertRegExp('/public\/js\/path$/', $this->url->scriptUrl("path"));
+        $this->assertRegExp('/js\/path$/', $this->url->scriptUrl("path"));
     }
 
     /**
@@ -74,7 +74,7 @@ class UrlTest extends TestCase
      */
     public function testFontUrl()
     {
-        $this->assertRegExp('/public\/font\/path$/', $this->url->fontUrl("path"));
+        $this->assertRegExp('/font\/path$/', $this->url->fontUrl("path"));
     }
 
     /**
@@ -85,7 +85,7 @@ class UrlTest extends TestCase
      */
     public function testImgUrl()
     {
-        $this->assertRegExp('/public\/assets\/img\/path$/', $this->url->imgUrl("path"));
+        $this->assertRegExp('/assets\/img\/path$/', $this->url->imgUrl("path"));
     }
 
     /**
@@ -96,6 +96,6 @@ class UrlTest extends TestCase
      */
     public function testVideoUrl()
     {
-        $this->assertRegExp('/public\/assets\/vid\/path$/', $this->url->videoUrl("path"));
+        $this->assertRegExp('/assets\/vid\/path$/', $this->url->videoUrl("path"));
     }
 }

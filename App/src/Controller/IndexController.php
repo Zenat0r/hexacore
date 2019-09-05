@@ -7,14 +7,8 @@ use Hexacore\Core\Response\Response;
 
 class IndexController extends Controller
 {
-    public function index(int $num = 0): Response
+    public function index(int $num = 0): \Hexacore\Core\Response\ResponseInterface
     {
-        return $this->render([
-            "main" => "index/index.php",
-            "context" => "index/index2.php"
-        ], [
-            ["num" => $num],
-            ["num" => 1337]
-        ]);
+        return $this->render("index/index.php");
     }
 }

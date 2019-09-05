@@ -3,5 +3,6 @@
   "Hexacore\\Core\\Auth\\AuthInterface": "Hexacore\\Core\\Auth\\Auth",
   "Hexacore\\Core\\Model\\AbstractQueryBuilder": "Hexacore\\Database\\MySql\\QueryBuilder",
   "Hexacore\\Core\\Model\\Connection\\ConnectionInterface": "Hexacore\\Database\\MySql\\Connection",
-  "Hexacore\\Core\\Annotation\\Parser\\AnnotationParserInterface": "Hexacore\\Core\\Annotation\\Parser\\AnnotationParser"
+  "Hexacore\\Core\\Annotation\\Parser\\AnnotationParserInterface": "Hexacore\\Core\\Annotation\\Parser\\AnnotationParser",
+  "Hexacore\\Core\\View\\ViewInterface": "Hexacore\\Core\\View\\View"
 }

@@ -4,6 +4,7 @@ namespace Hexacore\Core\Request;
 
 use Hexacore\Core\Storage\Cookie\CookieInterface;
 use Hexacore\Core\Storage\Session\Session;
+use Hexacore\Core\Storage\StorageInterface;
 
 /**
  * Interface RequestInterface
@@ -16,30 +17,28 @@ interface RequestInterface
      *
      * @return string
      */
-    public function getFullRequest() : string;
+    public function getFullRequest(): string;
 
     /**
      * Return the method name (POST,PUT,GET,DELETE,PATCH)
      *
      * @return string
      */
-    public function getMethod() : string;
+    public function getMethod(): string;
 
     /**
-     * Return a specific header
+     * Return a header StorageInterface
      *
-     * @param string $name
-     * @throws Exception
-     * @return string
+     * @return StorageInterface
      */
-    public function getHeader(string $name) : string;
+    public function getHeader(): StorageInterface;
 
     /**
      * Return the $_GET array
      *
      * @return array|null
      */
-    public function getQueries() : ?iterable;
+    public function getQueries(): ?iterable;
 
     /**
      * Return specific value of $_GET or null
@@ -54,7 +53,7 @@ interface RequestInterface
      *
      * @return array|null
      */
-    public function getPosts() : ?iterable;
+    public function getPosts(): ?iterable;
 
     /**
      * Return specific value of $_POST or null
@@ -70,19 +69,20 @@ interface RequestInterface
      * @return void
      */
     public function getPayload();
+
     /**
      * Return a session object
      *
      * @return Session
      */
-    public function getSession() : Session;
+    public function getSession(): Session;
 
     /**
      * Return the $_SERVER array
      *
      * @return array
      */
-    public function getServers() : iterable;
+    public function getServers(): iterable;
 
     /**
      * Return specific value of $_SERVER or null
@@ -104,7 +104,7 @@ interface RequestInterface
      *
      * @return array|null
      */
-    public function getFiles() : ?iterable;
+    public function getFiles(): ?iterable;
 
     /**
      * Return specific value of $_FILES or null

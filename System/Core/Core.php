@@ -53,7 +53,7 @@ class Core
         try {
             $dic = DIC::start();
 
-            $firewallName = JsonConfig::get("app")["firewall"] ?? Core::DEFAULT_FIREWALL;
+            $firewallName = JsonConfig::get()["firewall"] ?? Core::DEFAULT_FIREWALL;
             $firewall = $dic->get($firewallName);
 
             $this->eventManager->notify(EventManager::CORE_FIREWALL_PRE_CHECK, $firewall);
@@ -66,7 +66,7 @@ class Core
 
             $this->eventManager->notify(EventManager::CORE_FIREWALL_POST_CHECK, $firewall);
 
-            $authName = JsonConfig::get("app")["auth"]["class"] ?? Core::DEFAULT_AUTH;
+            $authName = JsonConfig::get()["Auth"]["class"] ?? Core::DEFAULT_AUTH;
             $auth = $dic->get($authName);
 
             $this->eventManager->notify(EventManager::CORE_AUTH_PRE_AUTHENTICATE, $auth);
@@ -89,13 +89,30 @@ class Core
 
             return $response->send($request);
         }catch(\Exception $e){
-            $errorResponse = new ErrorResponse($e->getMessage(), [
-                "trace" => $e->getTraceAsString(),
-                "line" => $e->getLine(),
-                "file" => $e->getFile()
-            ], $e->getCode());
+            $environment = getenv('ENVIRONMENT');
+            if ('dev' === $environment) {
+                $errorResponse = new ErrorResponse($e->getMessage(), [
+                    "trace" => $e->getTraceAsString(),
+                    "line" => $e->getLine(),
+                    "file" => $e->getFile()
+                ], $e->getCode());
 
-            return $errorResponse->send($request);
+                return $errorResponse->send($request);
+            } else {
+                $controllerName = JsonConfig::get()['defaultErrorController'];
+                $actionName = JsonConfig::get()['defaultErrorAction'];
+
+                $controllerNamespace = "App\\Controller\\{$controllerName}Controller";
+
+                /** @var Controller $controller */
+                $controller = new $controllerNamespace();
+                $controller->initialize($dic, $auth);
+
+                /** @var ResponseInterface $response */
+                $response = $controller->$actionName($e->getCode());
+
+                return $response->send($request);
+            }
         }
     }
 }

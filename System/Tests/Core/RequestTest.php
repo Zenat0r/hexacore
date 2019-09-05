@@ -59,7 +59,7 @@ class RequestTest extends TestCase
 
         $request = Request::get();
 
-        $this->assertSame('UTF-8', $request->getHeader("ACCEPT_ENCODING"));
+        $this->assertSame('UTF-8', $request->getHeader()->get("ACCEPT_ENCODING"));
     }
 
     public function testGetQuery()

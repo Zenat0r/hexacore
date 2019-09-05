@@ -1,11 +1,4 @@
 {
     "name": "first-hexacore",
-    "secret": "",
-    "eventSubscriber": [
-    ],
-  "Auth": {
-    "roles": [
-      "ADMIN_USER"
-    ]
-  }
+    "secret": ""
 }

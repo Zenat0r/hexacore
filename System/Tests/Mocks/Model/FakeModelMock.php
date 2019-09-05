@@ -31,7 +31,7 @@ class FakeModelMock implements ManageableModelInterface
      * @param mixed $id
      * @return ModelMock
      */
-    public function setId(int $id): ManageableModelInterface
+    public function setId($id): ManageableModelInterface
     {
         $this->id = $id;
         return $this;

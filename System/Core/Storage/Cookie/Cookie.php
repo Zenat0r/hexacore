@@ -2,6 +2,7 @@
 
 namespace Hexacore\Core\Storage\Cookie;
 
+use Hexacore\Core\Config\JsonConfig;
 use Hexacore\Core\Request\Request;
 use Hexacore\Core\Storage\StorageInterface;
 
@@ -16,11 +17,11 @@ class Cookie implements CookieInterface, StorageInterface
     {
         $this->path = "/";
         $this->timeout = time() + 3600;
-        $this->secured = false;
-        $this->httpOnly = false;
+        $this->secured = JsonConfig::get('app')['https'] ?? false;
+        $this->httpOnly = true;
     }
 
-    public function setPath(string $path) : CookieInterface
+    public function setPath(string $path): CookieInterface
     {
         $this->path = $path;
 
