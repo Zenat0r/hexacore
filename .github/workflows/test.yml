@@ -1,0 +1,13 @@
+name: Unit Test
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: test
+        run: |
+          cd ${GITHUB_WORKSPACE}/System/Tests/
+          phpunit --bootstrap autoload.php --configuration ../phpunit.xml

@@ -66,7 +66,7 @@ class View implements ViewInterface
 
     public function create(string $viewPath, array $data = []): ResponseInterface
     {
-        if (!empty($data)) {
+        if (null !== $data) {
             extract($this->data);
         }
 
