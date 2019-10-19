@@ -1,0 +1,9 @@
+<?php
+
+use Hexacore\Command\CommandManager;
+
+require __DIR__ . "/../vendor/autoload.php";
+
+$statusCode = CommandManager::run($argc, $argv);
+
+fwrite(STDOUT, "Status: $statusCode \n");
