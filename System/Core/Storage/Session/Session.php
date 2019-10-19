@@ -10,12 +10,13 @@ class Session implements SessionInterface, StorageInterface
     {
         $this->start();
     }
-    public function start() : void
+
+    public function start(): void
     {
         session_start();
     }
 
-    public function destroy() : void
+    public function destroy(): void
     {
         session_unset();
         session_destroy();
@@ -32,7 +33,7 @@ class Session implements SessionInterface, StorageInterface
         }
     }
 
-    public function remove(string $name) : bool
+    public function remove(string $name): bool
     {
         if (isset($_SESSION[$name])) {
             unset($_SESSION[$name]);

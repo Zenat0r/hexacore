@@ -2,21 +2,34 @@
 
 namespace Hexacore\Core\DI;
 
+use Hexacore\Core\Config\ConfigInterface;
 use Hexacore\Core\Config\JsonConfig;
 
 class DIC
 {
     private static $instance;
 
+    /**
+     * @var ConfigInterface
+     */
+    private $config;
+
     public static function start(): DIC
     {
         if (is_null(self::$instance)) {
             self::$instance = new DIC();
+
+            self::$instance->config = JsonConfig::getInstance()->setFile('dependencyInjection')->toArray();
         }
 
         return self::$instance;
     }
 
+    /**
+     * @param string $name
+     * @return object
+     * @throws \ReflectionException
+     */
     public function get(string $name)
     {
         $reflectedClass = new \ReflectionClass($name);
@@ -24,7 +37,7 @@ class DIC
         if ($reflectedClass->isInstantiable()) {
             return $this->instantiate($reflectedClass);
         } elseif ($reflectedClass->isInterface() || $reflectedClass->isAbstract()) {
-            $class = JsonConfig::get("autowiring")[$name];
+            $class = $this->config['autowiring'][$name];
 
             return $this->instantiate(new \ReflectionClass($class));
         } else {
@@ -32,6 +45,11 @@ class DIC
         }
     }
 
+    /**
+     * @param \ReflectionClass $reflectedClass
+     * @return object
+     * @throws \ReflectionException
+     */
     private function instantiate(\ReflectionClass $reflectedClass)
     {
         $reflectedConstructor = $reflectedClass->getConstructor();
@@ -43,7 +61,13 @@ class DIC
                 if ($param->getClass()) {
                     $parameters[] = $this->get($param->getClass()->getName());
                 } else {
-                    $parameters[] = $param->getDefaultValue();
+                    $classNamespace = $reflectedClass->getName();
+
+                    if (isset($this->config[$classNamespace][$param->getName()])) {
+                        $parameters[] = $this->config[$classNamespace][$param->getName()];
+                    } else {
+                        $parameters[] = $param->getDefaultValue();
+                    }
                 }
             }
             return $reflectedClass->newInstanceArgs($parameters);

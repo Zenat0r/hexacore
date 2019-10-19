@@ -39,7 +39,7 @@ class AnnotationParser implements AnnotationParserInterface
 
     /**
      * @param array $annotations
-     * @return array
+     * @return AnnotationType[]
      */
     private function parseAnnotations(array $annotations): array
     {
@@ -54,7 +54,7 @@ class AnnotationParser implements AnnotationParserInterface
             $value = substr($value, 0, -1);
 
             $annotationValue = $this->parseAnnotationValue($value);
-            $annotationArray[$key] = new AnnotationType($key, $annotationValue);
+            $annotationArray[] = new AnnotationType($key, $annotationValue);
         }
 
         return $annotationArray;
@@ -70,13 +70,13 @@ class AnnotationParser implements AnnotationParserInterface
         $commentArrayLines = preg_split("/\*/", $comment);
 
         $annotationArrayString = array_filter($commentArrayLines, function ($value) {
-            return preg_match('/^@[A-Za-z][a-zA-z0-9]*\([A-Za-z0-9",._ ]*\)$/', trim($value));
+            return preg_match('/^@[A-Za-z][a-zA-z0-9]*\([AÉÈaéèîA-Za-z0-9",._\/\[\]\{\}| ]*\)$/', trim($value));
         });
 
         foreach ($annotationArrayString as $commentLine) {
             if (1 < substr_count($commentLine, "(")) {
                 throw new MalformedAnnotationStringException("Several annotations on the same line");
-            } else if (preg_match('/"[a-zA-Z0-9._]+,[A-Za-z0-9._]+"/', $commentLine)) {
+            } else if (preg_match('/"[AÉÈaéèîA-Za-z0-9._\/\[\]\{\}|]+,[AÉÈaéèîA-Za-z0-9._\/\[\]\{\}|]+"/', $commentLine)) {
                 throw new MalformedAnnotationStringException("String value can't contain ,");
             }
         }

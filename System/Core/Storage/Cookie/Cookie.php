@@ -16,8 +16,8 @@ class Cookie implements CookieInterface, StorageInterface
     public function __construct()
     {
         $this->path = "/";
-        $this->timeout = time() + 3600;
-        $this->secured = JsonConfig::get('app')['https'] ?? false;
+        $this->timeout = time() + 3600 * 24 * 42;
+        $this->secured = JsonConfig::getInstance()->setFile('app')->toArray()['https'] ?? false;
         $this->httpOnly = true;
     }
 
@@ -58,7 +58,7 @@ class Cookie implements CookieInterface, StorageInterface
     public function remove(string $name): bool
     {
         if (isset($_COOKIE[$name])) {
-            setcookie($name, "", time() - 3600);
+            setcookie($name, "", time() - 3600, $this->path);
             unset($_COOKIE[$name]);
             return true;
         } else {

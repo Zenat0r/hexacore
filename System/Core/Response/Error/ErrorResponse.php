@@ -2,9 +2,9 @@
 
 namespace Hexacore\Core\Response\Error;
 
+use Hexacore\Core\Request\RequestInterface;
 use Hexacore\Core\Response\Response;
 use Hexacore\Core\Response\ResponseInterface;
-use Hexacore\Core\Request\RequestInterface;
 
 class ErrorResponse extends Response
 {

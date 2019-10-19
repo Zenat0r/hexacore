@@ -24,7 +24,7 @@ class Core
 
     private $eventManager;
 
-    public static function boot(EventDispatcherInterface $eventManager) : Core
+    public static function boot(EventDispatcherInterface $eventManager): Core
     {
         if (is_null(self::$core)) {
             self::$core = new Core($eventManager);
@@ -36,7 +36,7 @@ class Core
     {
         $this->eventManager = $eventManager;
 
-        $subs = JsonConfig::get()["eventSubscriber"];
+        $subs = JsonConfig::getInstance()->setFile('system')->toArray()["eventSubscriber"];
 
         $dic = DIC::start();
         if (!empty($subs)) {
@@ -48,12 +48,12 @@ class Core
         $this->eventManager->notify(EventManager::CORE_BOOT);
     }
 
-    public function handle(RequestInterface $request) : ResponseInterface
+    public function handle(RequestInterface $request): ResponseInterface
     {
         try {
             $dic = DIC::start();
 
-            $firewallName = JsonConfig::get()["firewall"] ?? Core::DEFAULT_FIREWALL;
+            $firewallName = JsonConfig::getInstance()->setFile('system')->toArray()["firewall"] ?? Core::DEFAULT_FIREWALL;
             $firewall = $dic->get($firewallName);
 
             $this->eventManager->notify(EventManager::CORE_FIREWALL_PRE_CHECK, $firewall);
@@ -66,7 +66,7 @@ class Core
 
             $this->eventManager->notify(EventManager::CORE_FIREWALL_POST_CHECK, $firewall);
 
-            $authName = JsonConfig::get()["Auth"]["class"] ?? Core::DEFAULT_AUTH;
+            $authName = JsonConfig::getInstance()->setFile('system')->toArray()["Auth"]["class"] ?? Core::DEFAULT_AUTH;
             $auth = $dic->get($authName);
 
             $this->eventManager->notify(EventManager::CORE_AUTH_PRE_AUTHENTICATE, $auth);
@@ -88,7 +88,7 @@ class Core
             $this->eventManager->notify(EventManager::CORE_ROUTER_POST_MATCH, $response);
 
             return $response->send($request);
-        }catch(\Exception $e){
+        } catch (\Throwable $e) {
             $environment = getenv('ENVIRONMENT');
             if ('dev' === $environment) {
                 $errorResponse = new ErrorResponse($e->getMessage(), [
@@ -99,8 +99,8 @@ class Core
 
                 return $errorResponse->send($request);
             } else {
-                $controllerName = JsonConfig::get()['defaultErrorController'];
-                $actionName = JsonConfig::get()['defaultErrorAction'];
+                $controllerName = JsonConfig::getInstance()->setFile('system')->toArray()['defaultErrorController'];
+                $actionName = JsonConfig::getInstance()->setFile('system')->toArray()['defaultErrorAction'];
 
                 $controllerNamespace = "App\\Controller\\{$controllerName}Controller";
 

@@ -3,6 +3,8 @@
 
 namespace Hexacore\Core\Annotation;
 
+use Hexacore\Core\Annotation\Type\AnnotationType;
+
 /**
  * Interface AnnotationInterface
  * @package Hexacore\Core\Annotation
@@ -15,7 +17,7 @@ interface AnnotationInterface
      * and value the related value
      *
      * @param string $class
-     * @return array
+     * @return AnnotationType[]
      */
     public function getClassAnnotations(string $class): array;
 
@@ -26,7 +28,7 @@ interface AnnotationInterface
      *
      * @param string $class
      * @param string $propriety
-     * @return array
+     * @return AnnotationType[]
      */
     public function getPropertyAnnotations(string $class, string $propriety): array;
 
@@ -37,7 +39,7 @@ interface AnnotationInterface
      *
      * @param string $class
      * @param string $method
-     * @return array
+     * @return AnnotationType[]
      */
     public function getMethodAnnotations(string $class, string $method): array;
 }

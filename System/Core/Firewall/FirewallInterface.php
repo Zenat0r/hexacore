@@ -13,5 +13,5 @@ interface FirewallInterface
      * @param boolean $throw
      * @return boolean
      */
-    public function check(RequestInterface $request, bool $throw = true) : bool;
+    public function check(RequestInterface $request, bool $throw = true): bool;
 }

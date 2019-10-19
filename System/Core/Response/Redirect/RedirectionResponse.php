@@ -10,6 +10,6 @@ class RedirectionResponse extends Response
     {
         $this->content = "";
         $this->headers = ["location" => $url];
-        $this->code = $this::MOVED_PERMANENTLY;
+        $this->code = $this::FOUND;
     }
 }

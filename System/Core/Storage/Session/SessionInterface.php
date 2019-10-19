@@ -9,12 +9,12 @@ interface SessionInterface
      *
      * @return void
      */
-    public function start() : void;
+    public function start(): void;
 
     /**
      * End the session
      *
      * @return void
      */
-    public function destroy() : void;
+    public function destroy(): void;
 }

@@ -8,12 +8,16 @@ interface ConfigInterface
      * Return the configuration as an array by giving the name of a file.
      * The file must be located in App/config/
      * Subfolders cas be used to e.g : service/config
-     * Caution the file extension is not needed, is this handled by the 
+     * Caution the file extension is not needed, is this handled by the
      * specific implementation of this interface
      *
-     * @param string $name
-     *
-     * @return array
+     * @return ConfigInterface
      */
-    public static function get(string $name) : iterable;
+    public static function getInstance(): ConfigInterface;
+
+    public function setFile(string $path) : ConfigInterface;
+
+    public function getFile();
+
+    public function toArray();
 }

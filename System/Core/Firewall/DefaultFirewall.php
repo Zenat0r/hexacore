@@ -13,10 +13,10 @@ class DefaultFirewall implements FirewallInterface
      * {@inheritdoc}
      * @throws \Exception
      */
-    public function check(RequestInterface $request, bool $throw = true) : bool
+    public function check(RequestInterface $request, bool $throw = true): bool
     {
         $https = $request->getServer("HTTPS");
-        $config = JsonConfig::get("app")["https"] ?? false;
+        $config = JsonConfig::getInstance()->setFile('app')->toArray()["https"] ?? false;
 
         if ($config
             && !empty($https) && $https !== "off"

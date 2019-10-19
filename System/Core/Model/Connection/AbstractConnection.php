@@ -33,7 +33,7 @@ abstract class AbstractConnection implements ConnectionInterface
      */
     public function __construct()
     {
-        $config = JsonConfig::get("database");
+        $config = JsonConfig::getInstance()->setFile('database')->toArray();
 
         $this->db = $config["dbname"];
 

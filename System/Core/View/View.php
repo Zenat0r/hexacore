@@ -4,12 +4,10 @@ namespace Hexacore\Core\View;
 
 use Hexacore\Core\Response\Response;
 use Hexacore\Core\Response\ResponseInterface;
-use Hexacore\Core\View\ViewInterface;
 use Hexacore\Helpers\Url;
 
 class View implements ViewInterface
 {
-    private $blocks;
     private $data;
     private $base;
     private $url;
@@ -21,12 +19,11 @@ class View implements ViewInterface
 
     public function init(array $options = null): void
     {
-        if ($options === null || empty($options['baseView'])) {
-            $this->base = 'base.php';
-        } else {
-            $this->base = $options['baseView'];
+        if ($options === null || empty($options["baseView"])) {
+            $base = "base.php";
         }
 
+        $this->base = $base;
     }
 
     public function baseUrl(string $resource): string
@@ -64,7 +61,7 @@ class View implements ViewInterface
         return $this->url->videoUrl($path);
     }
 
-    public function create(string $viewPath, array $data = []): ResponseInterface
+    public function create(string $viewPath, array $data = null): ResponseInterface
     {
         if (null !== $data) {
             extract($this->data);

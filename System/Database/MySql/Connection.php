@@ -14,6 +14,7 @@ use Hexacore\Core\Model\Connection\AbstractConnection;
 class Connection extends AbstractConnection
 {
     private $pdo;
+
     /**
      * @inheritdoc
      */

@@ -27,7 +27,7 @@ class ModelRepository implements ModelRepositoryInterface
     /**
      * @var AbstractQueryBuilder
      */
-    private $qb;
+    protected $qb;
 
     /**
      * @var string
@@ -65,10 +65,10 @@ class ModelRepository implements ModelRepositoryInterface
 
     /**
      * @param iterable $data
-     * @return array|null
+     * @return array|mixed|null
      * @throws \Exception
      */
-    private function populateModel(iterable $data): ?array
+    protected function populateModel(iterable $data)
     {
         if (0 === sizeof($data)) {
             return null;
@@ -91,10 +91,10 @@ class ModelRepository implements ModelRepositoryInterface
                     }
                 }
 
-                array_push($models, $model);
+                $models[] = $model;
             }
 
-            return $models;
+            return count($models) > 1 ? $models : reset($models);
         }
     }
 

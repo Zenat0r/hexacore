@@ -32,7 +32,7 @@ class Auth implements AuthInterface, AnnotationableInterface
 
     public function __construct()
     {
-        $this->roles = JsonConfig::get()["Auth"]["roles"] ?? [];
+        $this->roles = JsonConfig::getInstance()->setFile('system')->toArray()["Auth"]["roles"] ?? [];
         array_push($this->roles, Auth::DEFAULT_ROLE);
     }
 

@@ -109,8 +109,8 @@ class Router implements RouterInterface
             $items = [];
         }
 
-        $controllerName = array_shift($items) ?? JsonConfig::get()["defaultController"];
-        $actionName = array_shift($items) ?? JsonConfig::get()["defaultAction"];
+        $controllerName = array_shift($items) ?? JsonConfig::getInstance()->setFile('system')->toArray()["defaultController"];
+        $actionName = array_shift($items) ?? JsonConfig::getInstance()->setFile('system')->toArray()["defaultAction"];
 
         $controllerName = ucfirst(strtolower($controllerName)) . "Controller";
         $actionName = strtolower($actionName);

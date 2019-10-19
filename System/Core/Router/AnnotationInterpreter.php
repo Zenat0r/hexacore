@@ -6,6 +6,7 @@ namespace Hexacore\Core\Router;
 
 use Hexacore\Core\Annotation\Annotation;
 use Hexacore\Core\Annotation\AnnotationableInterface;
+use Hexacore\Core\Annotation\Type\AnnotationType;
 use Hexacore\Core\Auth\AuthInterface;
 use Hexacore\Core\Config\JsonConfig;
 use Hexacore\Core\DI\DIC;
@@ -73,7 +74,7 @@ class AnnotationInterpreter
     private function loadCustomAnnotationableClass(): void
     {
         try {
-            $annotationableServices = JsonConfig::get("annotation");
+            $annotationableServices = JsonConfig::getInstance()->setFile('annotation')->toArray();
 
             foreach ($annotationableServices as $service) {
                 $this->loadAnnotationableClass($service);
@@ -94,13 +95,20 @@ class AnnotationInterpreter
      */
     public function interpret(string $class, string $method = null): void
     {
-        $annotationArray = is_null($method) ? $this->annotation->getClassAnnotations($class) : $this->annotation->getMethodAnnotations($class, $method);
+        $annotationArray = null === $method ? $this->annotation->getClassAnnotations($class) : $this->annotation->getMethodAnnotations($class, $method);
+
+        $annotationArrayAssoc = [];
+
+        /** @var AnnotationType $annotation */
+        foreach ($annotationArray as $annotation) {
+            $annotationArrayAssoc[$annotation->getKey()] = $annotation;
+        }
 
         foreach ($this->annotationableClasses as $annotationableClass) {
             $annotationSupportedName = $annotationableClass->getAnnotationName();
 
-            if (array_key_exists($annotationSupportedName, $annotationArray)) {
-                $annotationType = $annotationArray[$annotationSupportedName];
+            if (array_key_exists($annotationSupportedName, $annotationArrayAssoc)) {
+                $annotationType = $annotationArrayAssoc[$annotationSupportedName];
 
                 if ($annotationableClass->isValidAnnotationType($annotationType)) {
                     $annotationableClass->process($annotationType);

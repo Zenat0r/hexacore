@@ -6,6 +6,16 @@ use Hexacore\Core\Request\Request;
 
 class Url
 {
+    /**
+     * @var string
+     */
+    private $version;
+
+    public function __construct(string $version = '1.0')
+    {
+        $this->version = $version;
+    }
+
     public function baseUrl(string $resource = null): string
     {
         $request = Request::get();
@@ -39,12 +49,12 @@ class Url
 
     public function styleUrl(string $path): string
     {
-        return $this->baseUrl("css/$path");
+        return $this->baseUrl("css/$path?{$this->version}");
     }
 
     public function scriptUrl(string $path): string
     {
-        return $this->baseUrl("js/$path");
+        return $this->baseUrl("js/$path?{$this->version}");
     }
 
     public function fontUrl(string $path): string
@@ -54,11 +64,11 @@ class Url
 
     public function imgUrl(string $path): string
     {
-        return $this->baseUrl("assets/img/$path");
+        return $this->baseUrl("img/$path?{$this->version}");
     }
 
     public function videoUrl(string $path): string
     {
-        return $this->baseUrl("assets/vid/$path");
+        return $this->baseUrl("vid/$path?{$this->version}");
     }
 }
