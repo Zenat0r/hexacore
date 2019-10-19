@@ -431,8 +431,6 @@ This description can be shown using the `--help` ou `-h` flash :
 
 This project is developed for fun and may not be updated, but I see a lot of rooms for improvement :
 - Add more unit tests to the framework
-- Be able to add another templating system
-- Login handler
 - Associate Models together
 
 For the future more test on several environments are required for example on nginx web server.
