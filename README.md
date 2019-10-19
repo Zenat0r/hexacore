@@ -319,6 +319,114 @@ class UserController extends Controller
 }
 ```
 
+##Command
+Hexacore allow you to create `Command`. Commands can use your already build services
+and all hexacore features.
+
+To create a command, create a new file in the `src/App/Command` folder. As controllers all commands' class must end with Command keyword.
+```php
+<?php
+
+namespace App\Command;
+
+use App\Model\User;
+use App\Repository\UserRepository;
+use Hexacore\Command\IO\ConsoleIO;
+use Hexacore\Core\Config\JsonConfig;
+use Hexacore\Core\Model\Manager\ModelManager;
+
+class UserCommand
+{
+    /**
+     * @param string $login
+     * @param string $role
+     * @param ModelManager $modelManager
+     *
+     * @param UserRepository $userRepository
+     * @throws \ReflectionException
+     */
+    public function create(string $login, string $role, ModelManager $modelManager, UserRepository $userRepository)
+    {
+        $user = new User();
+
+        $userCheck = $userRepository->findOneByLogin($login);
+
+        if (null !== $userCheck) {
+            throw new \Exception("User already exist");
+        }
+
+        ConsoleIO::writeLn('Enter password :');
+        try {
+            $password = ConsoleIO::readHidden();
+        } catch (\Exception $e) {
+            $password = ConsoleIO::read();
+        }
+
+        $password = password_hash($password . JsonConfig::getInstance()->setFile('app')->toArray()['secret'], PASSWORD_BCRYPT);
+
+        $user
+            ->setLogin($login)
+            ->setPassword($password)
+            ->setRole($role)
+        ;
+
+        $modelManager->persist($user);
+    }
+
+    /**
+     * @param string $login
+     * @param ModelManager $modelManager
+     * @param UserRepository $userRepository
+     * @throws \Exception
+     */
+    public function delete(string $login, ModelManager $modelManager, UserRepository $userRepository)
+    {
+        $user = $userRepository->findOneByLogin($login);
+
+        if (null === $user) {
+            throw new \Exception("User doesn't exist");
+        }
+
+        $modelManager->delete($user);
+    }
+}
+```
+
+This command allow you to create user and delete user.
+
+You can run these command as shown below :
+- `php System/command User:create Athena ADMIN_USER`
+- `php System/command User:delete Athena`
+
+You can also describe the command with annotations :
+
+```php
+...
+class UserCommand
+{
+    /**
+      * @Description("Create a new user")
+      * @Argument\Required("User login [Athena]")
+      * @Argument\Required("User role [ADMIN_USER]")
+      * @Argument\Optional("Optional Argument")
+      * @Example("php System/command User:create Zeus ROLE_USER optional")
+      *  
+      * @param string $login
+      * @param string $role
+      * @param ModelManager $modelManager
+      *
+      * @param UserRepository $userRepository
+      * @throws \ReflectionException
+     */
+    public function create(string $login, string $role, ?string $optional, ModelManager $modelManager, UserRepository $userRepository)
+...
+```
+
+This description can be shown using the `--help` ou `-h` flash :
+
+`php System/command User:generate --help`
+
+
 ## Evolution
 
 This project is developed for fun and may not be updated, but I see a lot of rooms for improvement :
