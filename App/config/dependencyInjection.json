@@ -1,0 +1,20 @@
+{
+  "App\\Security\\Auth": {
+    "secret": "#app|secret#"
+  },
+  "Hexacore\\Helpers\\Url" : {
+    "version" : "#system|version#"
+  },
+  "App\\Service\\MobilePush": {
+    "user" : "#app|service.sms.user#",
+    "password" : "#app|service.sms.password#"
+  },
+  "autowiring" : {
+    "Hexacore\\Core\\Storage\\Session\\SessionInterface": "Hexacore\\Core\\Storage\\Session\\Session",
+    "Hexacore\\Core\\Auth\\AuthInterface": "App\\Security\\Auth",
+    "Hexacore\\Core\\Model\\AbstractQueryBuilder": "Hexacore\\Database\\MongoDB\\MongoDbQueryBuilder",
+    "Hexacore\\Core\\Model\\Connection\\ConnectionInterface": "Hexacore\\Database\\MongoDB\\MongoDbConnection",
+    "Hexacore\\Core\\Annotation\\Parser\\AnnotationParserInterface": "Hexacore\\Core\\Annotation\\Parser\\AnnotationParser",
+    "Hexacore\\Core\\View\\ViewInterface": "App\\HexAdapter\\TwigAdapter"
+  }
+}
